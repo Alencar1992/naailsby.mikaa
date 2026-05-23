@@ -97,131 +97,132 @@
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
-        let cacheDados = [];
-        let meuGrafico = null;
+    const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
+    let cacheDados = [];
+    let meuGrafico = null;
 
-        function autenticar() {
-            const senha = document.getElementById('inputSenha').value;
-            if (senha === "mika123") {
-                document.getElementById('loginModal').style.display = 'none';
-                carregarDadosGerais();
-            } else {
-                document.getElementById('erroLogin').innerText = "Senha incorreta! Tente novamente.";
-            }
+    function autenticar() {
+        const senha = document.getElementById('inputSenha').value;
+        if (senha === "mika123") {
+            document.getElementById('loginModal').style.display = 'none';
+            carregarDadosGerais();
+        } else {
+            document.getElementById('erroLogin').innerText = "Senha incorreta! Tente novamente.";
         }
+    }
 
-        function trocarAba(idAba, botao) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(idAba).classList.add('active');
-            botao.classList.add('active');
-            if (idAba === 'relatorios') renderizarGrafico();
+    function trocarAba(idAba, botao) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(idAba).classList.add('active');
+        botao.classList.add('active');
+        if (idAba === 'relatorios') renderizarGrafico();
+    }
+
+    function carregarDadosGerais() {
+        document.getElementById('listaAgendamentos').innerHTML = "Buscando dados da planilha...";
+        
+        // O getTime() no final impede o navegador de usar cache antigo e dar erro fantasma!
+        fetch(URL_API + "?nocache=" + new Date().getTime())
+            .then(res => res.json())
+            .then(dados => {
+                cacheDados = dados;
+                montarListaAgendamentos();
+                calcularBadgeHoje();
+            }).catch(() => {
+                document.getElementById('listaAgendamentos').innerHTML = "<p style='color:red;'>Nenhum dado encontrado na planilha ainda.</p>";
+            });
+    }
+
+    function calcularBadgeHoje() {
+        const hojeIso = new Date().toISOString().substring(0,10);
+        const totalHoje = cacheDados.filter(item => item.data.substring(0,10) === hojeIso && item.status === 'Agendado').length;
+        document.getElementById('qtdHoje').innerText = totalHoje;
+    }
+
+    function montarListaAgendamentos() {
+        const container = document.getElementById('listaAgendamentos');
+        container.innerHTML = "";
+        if (cacheDados.length === 0) {
+            container.innerHTML = "<p>Nenhuma agenda registrada ainda. Os clientes vão aparecer aqui!</p>";
+            return;
         }
-
-        function carregarDadosGerais() {
-            document.getElementById('listaAgendamentos').innerHTML = "Buscando dados da planilha...";
-            fetch(URL_API)
-                .then(res => res.json())
-                .then(dados => {
-                    cacheDados = dados;
-                    montarListaAgendamentos();
-                    calcularBadgeHoje();
-                }).catch(() => {
-                    document.getElementById('listaAgendamentos').innerHTML = "Erro ao buscar dados.";
-                });
-        }
-
-        function calcularBadgeHoje() {
-            const hojeIso = new Date().toISOString().substring(0,10);
-            const totalHoje = cacheDados.filter(item => item.data.substring(0,10) === hojeIso && item.status === 'Agendado').length;
-            document.getElementById('qtdHoje').innerText = totalHoje;
-        }
-
-        function montarListaAgendamentos() {
-            const container = document.getElementById('listaAgendamentos');
-            container.innerHTML = "";
-            if (cacheDados.length === 0) {
-                container.innerHTML = "<p>Nenhum registro encontrado.</p>";
-                return;
-            }
-            cacheDados.forEach(item => {
-                let botoesAcao = "";
-                if (item.status === 'Agendado') {
-                    botoesAcao = `
-                        <div class="actions">
-                            <button class="btn-success" onclick="mudarStatus('${item.id}', 'Concluído')">Concluir</button>
-                            <button class="btn-danger" onclick="cancelarComJustificativa('${item.id}')">Cancelar</button>
-                            <button class="btn-edit" onclick="reagendar('${item.id}')">Editar</button>
-                        </div>
-                    `;
-                }
-                container.innerHTML += `
-                    <div class="card-appointment ${item.status}">
-                        <div>
-                            <strong>${item.nome}</strong> <br>
-                            <span style="font-size:14px; color:#64748b;">📅 Dia: ${item.data.substring(0,10)} às ⏰ ${item.hora}</span>
-                            ${item.justificativa ? `<br><small style="color:red"><b>Motivo:</b> ${item.justificativa}</small>` : ''}
-                        </div>
-                        <div>
-                            <span style="font-weight:bold; font-size:12px; padding:4px 8px; border-radius:12px; background:#e2e8f0;">${item.status}</span>
-                            ${botoesAcao}
-                        </div>
+        cacheDados.forEach(item => {
+            let botoesAcao = "";
+            if (item.status === 'Agendado') {
+                botoesAcao = `
+                    <div class="actions">
+                        <button class="btn-success" onclick="mudarStatus('${item.id}', 'Concluído')">Concluir</button>
+                        <button class="btn-danger" onclick="cancelarComJustificativa('${item.id}')">Cancelar</button>
+                        <button class="btn-edit" onclick="reagendar('${item.id}')">Editar</button>
                     </div>
                 `;
-            });
-        }
-
-        // Função de envio genérica com NO-CORS para comandos de edição/exclusão
-        function dispararAcao(pacote, mensagemSucesso) {
-            fetch(URL_API, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(pacote)
-            }).then(() => {
-                alert(mensagemSucesso);
-                setTimeout(carregarDadosGerais, 1500); // Atualiza após 1,5 segundos para dar tempo ao Google
-            });
-        }
-
-        function mudarStatus(id, status, justificativa = "") {
-            dispararAcao({ acao: "atualizar_status", id: id, status: status, justificativa: justificativa }, "Status atualizado!");
-        }
-
-        function cancelarComJustificativa(id) {
-            if (confirm("Tem certeza que deseja CANCELAR este atendimento?")) {
-                let motivo = prompt("Digite o motivo do cancelamento:");
-                if (motivo) mudarStatus(id, 'Cancelado', motivo);
             }
-        }
+            container.innerHTML += `
+                <div class="card-appointment ${item.status}">
+                    <div>
+                        <strong>${item.nome}</strong> <br>
+                        <span style="font-size:14px; color:#64748b;">📅 Dia: ${item.data.substring(0,10)} às ⏰ ${item.hora}</span>
+                        ${item.justificativa ? `<br><small style="color:red"><b>Motivo:</b> ${item.justificativa}</small>` : ''}
+                    </div>
+                    <div>
+                        <span style="font-weight:bold; font-size:12px; padding:4px 8px; border-radius:12px; background:#e2e8f0;">${item.status}</span>
+                        ${botoesAcao}
+                    </div>
+                </div>
+            `;
+        });
+    }
 
-        function reagendar(id) {
-            let novaData = prompt("Digite a nova data (AAAA-MM-DD):");
-            let novaHora = prompt("Digite o novo horário (Ex: 14:00):");
-            if (novaData && novaHora) {
-                dispararAcao({ acao: "editar", id: id, data: novaData, hora: novaHora }, "Reagendado com sucesso!");
-            }
-        }
+    // Função de envio corrigida para aceitar edição e bloqueio sem sumir os dados
+    function dispararAcao(pacote, mensagemSucesso) {
+        fetch(URL_API, {
+            method: 'POST',
+            body: JSON.stringify(pacote)
+        }).then(res => res.json())
+          .then(() => {
+            alert(mensagemSucesso);
+            carregarDadosGerais(); // Recarrega a tela automaticamente após salvar
+        });
+    }
 
-        function salvarBloqueio() {
-            const data = document.getElementById('blockData').value;
-            const hora = document.getElementById('blockHora').value;
-            if(!data || !hora) return alert("Preencha data e hora!");
-            dispararAcao({ acao: "criar", data: data, hora: hora, nome: "Horário Travado", status: 'Bloqueado' }, "Horário bloqueado!");
-        }
+    function mudarStatus(id, status, justificativa = "") {
+        dispararAcao({ acao: "atualizar_status", id: id, status: status, justificativa: justificativa }, "Status atualizado com sucesso!");
+    }
 
-        function renderizarGrafico() {
-            const horas = ["09:00", "10:30", "13:30", "15:00", "16:30"];
-            const contagem = horas.map(h => cacheDados.filter(item => item.hora === h && item.status === 'Concluído').length);
-            const ctx = document.getElementById('graficoPico').getContext('2d');
-            if (meuGrafico) meuGrafico.destroy();
-            meuGrafico = new Chart(ctx, {
-                type: 'bar',
-                data: { labels: horas, datasets: [{ label: 'Serviços Realizados', data: contagem, backgroundColor: '#1e3a8a', borderRadius: 6 }] },
-                options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-            });
+    function cancelarComJustificativa(id) {
+        if (confirm("Tem certeza que deseja CANCELAR este atendimento?")) {
+            let motivo = prompt("Digite o motivo do cancelamento para ficar salvo no histórico:");
+            if (motivo) mudarStatus(id, 'Cancelado', motivo);
         }
-    </script>
+    }
+
+    function reagendar(id) {
+        let novaData = prompt("Digite a nova data (Formato: AAAA-MM-DD):");
+        let novaHora = prompt("Digite o novo horário (Ex: 14:00):");
+        if (novaData && novaHora) {
+            dispararAcao({ acao: "editar", id: id, data: novaData, hora: novaHora }, "Horário reagendado com sucesso!");
+        }
+    }
+
+    function salvarBloqueio() {
+        const data = document.getElementById('blockData').value;
+        const hora = document.getElementById('blockHora').value;
+        if(!data || !hora) return alert("Preencha a data e hora que deseja bloquear!");
+        dispararAcao({ acao: "criar", data: data, hora: hora, nome: "Travado (Mikaely)", status: 'Bloqueado' }, "Horário bloqueado com sucesso!");
+    }
+
+    function renderizarGrafico() {
+        const horas = ["09:00", "10:30", "13:30", "15:00", "16:30"];
+        const contagem = horas.map(h => cacheDados.filter(item => item.hora === h && item.status === 'Concluído').length);
+        const ctx = document.getElementById('graficoPico').getContext('2d');
+        if (meuGrafico) meuGrafico.destroy();
+        meuGrafico = new Chart(ctx, {
+            type: 'bar',
+            data: { labels: horas, datasets: [{ label: 'Serviços Realizados', data: contagem, backgroundColor: '#d81b60', borderRadius: 6 }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+    }
+</script>
 </body>
 </html>
