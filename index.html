@@ -5,51 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mikaely Nails</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #fef1f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1); width: 100%; max-width: 400px; border-top: 5px solid #d81b60; margin-bottom: 20px; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            margin: 0; padding: 20px; 
+            display: flex; flex-direction: column; align-items: center; 
+            background: url('https://images.unsplash.com/photo-1604654894610-df63bc536371?auto=format&fit=crop&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+        /* Sobreposição para garantir leitura */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.6); z-index: -1;
+        }
+        .card { background: rgba(255, 255, 255, 0.95); padding: 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,0.2); width: 100%; max-width: 400px; border-top: 5px solid #d81b60; margin-bottom: 20px; }
         h1 { color: #d81b60; text-align: center; margin-bottom: 5px; }
-        p.sub { text-align: center; color: #888; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
+        p.sub { text-align: center; color: #555; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
         
-        /* Calendário */
         .header-mes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; }
         .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #888; margin-bottom: 5px; }
         .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .dia { padding: 10px 0; text-align: center; background: #fafafa; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid #eee; }
+        .dia { padding: 10px 0; text-align: center; background: #fff; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid #ddd; }
         .dia:hover { background: #fce4ec; border-color: #d81b60; color: #d81b60; font-weight: bold; }
         .dia.vazio { background: transparent; border: none; cursor: default; }
         
-        /* Modal */
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
         .modal { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; }
         .modal h3 { margin-top: 0; color: #d81b60; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
         button { background: #d81b60; color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
         button.cancelar { background: #eee; color: #333; }
         
-        /* Card Sucesso */
         #cardSucesso { display: none; text-align: center; }
         .btn-whatsapp { background: #25D366; }
     </style>
 </head>
 <body>
-
     <div class="card" id="telaCalendario">
         <h1>Mikaely Nails 💅</h1>
         <p class="sub">Selecione o dia desejado na agenda</p>
-        
-        <div class="header-mes">
-            <span id="mesAtualStr"></span>
-        </div>
-        <div class="dias-semana">
-            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-        </div>
+        <div class="header-mes"><span id="mesAtualStr"></span></div>
+        <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
         <div class="grid-calendario" id="gridDias"></div>
     </div>
 
     <div class="card" id="cardSucesso">
         <h2 style="color: #25D366;">✅ Horário Reservado!</h2>
         <p>Seu pedido foi enviado para a Mikaely.</p>
-        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; border: 1px solid #ddd;">
             <strong>Nome:</strong> <span id="resNome"></span><br>
             <strong>Data:</strong> <span id="resData"></span><br>
             <strong>Hora:</strong> <span id="resHora"></span>
@@ -62,65 +64,49 @@
         <div class="modal">
             <h3>Agendar para <span id="dataSelecionadaStr"></span></h3>
             <input type="hidden" id="dataEscolhidaISO">
-            
             <label>Horário:</label>
             <select id="horaEscolhida">
-                <option value="09:00">09:00</option>
-                <option value="10:30">10:30</option>
-                <option value="13:30">13:30</option>
-                <option value="15:00">15:00</option>
+                <option value="09:00">09:00</option><option value="10:30">10:30</option>
+                <option value="13:30">13:30</option><option value="15:00">15:00</option>
                 <option value="16:30">16:30</option>
             </select>
-            
-            <label>Nome Completo:</label>
-            <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
-            
-            <label>WhatsApp (com DDD):</label>
-            <input type="tel" id="whatsCliente" placeholder="Ex: 11999999999">
-            
+            <label>Nome Completo:</label><input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
+            <label>WhatsApp (com DDD):</label><input type="tel" id="whatsCliente" placeholder="Ex: 11999999999">
             <button id="btnConfirmar" onclick="salvarAgendamento()">Confirmar Agendamento</button>
-            <button class="cancelar" onclick="fecharModal()">Cancelar</button>
+            <button class="cancelar" onclick="fecharModal('modalAgendamento')">Cancelar</button>
         </div>
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; // <-- COLOQUE SUA NOVA URL AQUI
-        let mesAtual = new Date();
-
-        function montarCalendario() {
-            const grid = document.getElementById('gridDias');
+        const URL_API = "https://script.google.com/macros/s/AKfycbwI36hPvhQLC74viNy-FkgyrDOy-eVhAPbYbaslW-gKyJmeQyV0f3kS8OSEZygoGUUC/exec"; 
+        
+        function montarCalendario(gridId, onClickHandler) {
+            const grid = document.getElementById(gridId);
             grid.innerHTML = '';
+            let hoje = new Date();
+            let ano = hoje.getFullYear(); let mes = hoje.getMonth();
+            if(document.getElementById('mesAtualStr')) document.getElementById('mesAtualStr').innerText = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
             
-            const ano = mesAtual.getFullYear();
-            const mes = mesAtual.getMonth();
-            document.getElementById('mesAtualStr').innerText = mesAtual.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+            let primeiroDiaMes = new Date(ano, mes, 1).getDay();
+            let diasNoMes = new Date(ano, mes + 1, 0).getDate();
             
-            const primeiroDiaMes = new Date(ano, mes, 1).getDay();
-            const diasNoMes = new Date(ano, mes + 1, 0).getDate();
-            
-            for (let i = 0; i < primeiroDiaMes; i++) {
-                grid.innerHTML += `<div class="dia vazio"></div>`;
-            }
-            
+            for (let i = 0; i < primeiroDiaMes; i++) grid.innerHTML += `<div class="dia vazio"></div>`;
             for (let dia = 1; dia <= diasNoMes; dia++) {
                 let div = document.createElement('div');
-                div.className = 'dia';
-                div.innerText = dia;
-                div.onclick = () => abrirModal(ano, mes, dia);
+                div.className = 'dia'; div.innerText = dia;
+                div.onclick = () => onClickHandler(ano, mes, dia);
                 grid.appendChild(div);
             }
         }
 
-        function abrirModal(ano, mes, dia) {
-            let dataFormatada = new Date(ano, mes, dia).toISOString().substring(0, 10);
-            document.getElementById('dataEscolhidaISO').value = dataFormatada;
+        function abrirModalCliente(ano, mes, dia) {
+            let dataISO = new Date(ano, mes, dia).toISOString().substring(0, 10);
+            document.getElementById('dataEscolhidaISO').value = dataISO;
             document.getElementById('dataSelecionadaStr').innerText = `${dia}/${mes+1}/${ano}`;
             document.getElementById('modalAgendamento').style.display = 'flex';
         }
 
-        function fecharModal() {
-            document.getElementById('modalAgendamento').style.display = 'none';
-        }
+        function fecharModal(id) { document.getElementById(id).style.display = 'none'; }
 
         function salvarAgendamento() {
             const data = document.getElementById('dataEscolhidaISO').value;
@@ -129,52 +115,41 @@
             const whats = document.getElementById('whatsCliente').value;
             const btn = document.getElementById('btnConfirmar');
 
-            if(!nome || !whats) return alert("Preencha seu nome e número de WhatsApp!");
+            if(!nome || !whats) return alert("Preencha nome e WhatsApp!");
 
-            btn.innerText = "Enviando...";
-            btn.disabled = true;
+            btn.innerText = "Enviando..."; btn.disabled = true;
 
-            const pacote = { acao: "criar", data: data, hora: hora, nome: nome, whatsapp: whats, status: 'Agendado' };
+            // MÉTODO CORRIGIDO (FORM URL ENCODED) PARA SALVAR SEM FALHA DE CORS
+            const params = new URLSearchParams();
+            params.append('acao', 'criar');
+            params.append('data', data);
+            params.append('hora', hora);
+            params.append('nome', nome);
+            params.append('whatsapp', whats);
+            params.append('status', 'Agendado');
 
-            fetch(URL_API, {
-                method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(pacote)
-            }).then(() => {
-                // Prepara a tela de sucesso
+            fetch(URL_API, { method: 'POST', mode: 'no-cors', body: params }).then(() => {
                 document.getElementById('resNome').innerText = nome;
                 document.getElementById('resData').innerText = data.split('-').reverse().join('/');
                 document.getElementById('resHora').innerText = hora;
-                
-                fecharModal();
+                fecharModal('modalAgendamento');
                 document.getElementById('telaCalendario').style.display = 'none';
                 document.getElementById('cardSucesso').style.display = 'block';
-                
-                btn.innerText = "Confirmar Agendamento";
-                btn.disabled = false;
+                btn.innerText = "Confirmar Agendamento"; btn.disabled = false;
             });
         }
 
         function enviarWhats() {
-            const nome = document.getElementById('resNome').innerText;
-            const data = document.getElementById('resData').innerText;
-            const hora = document.getElementById('resHora').innerText;
-            const texto = `Olá! Sou ${nome}. Acabei de solicitar um agendamento no site para o dia ${data} às ${hora}. Gostaria de confirmar!`;
-            
-            // Redireciona para o WhatsApp da cliente
-            const link = `https://wa.me/?text=${encodeURIComponent(texto)}`;
-            window.open(link, '_blank');
+            const n = document.getElementById('resNome').innerText; const d = document.getElementById('resData').innerText; const h = document.getElementById('resHora').innerText;
+            window.open(`https://wa.me/?text=${encodeURIComponent(`Olá! Sou ${n}. Acabei de solicitar agendamento no site para ${d} às ${h}. Gostaria de confirmar!`)}`, '_blank');
         }
 
         function voltarInicio() {
-            document.getElementById('telaCalendario').style.display = 'block';
-            document.getElementById('cardSucesso').style.display = 'none';
-            document.getElementById('nomeCliente').value = '';
-            document.getElementById('whatsCliente').value = '';
+            document.getElementById('telaCalendario').style.display = 'block'; document.getElementById('cardSucesso').style.display = 'none';
+            document.getElementById('nomeCliente').value = ''; document.getElementById('whatsCliente').value = '';
         }
 
-        montarCalendario();
+        montarCalendario('gridDias', abrirModalCliente);
     </script>
 </body>
 </html>
