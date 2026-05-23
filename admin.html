@@ -3,226 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel - Mikaely Nails</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Agendamentos Mikaa Nail Designer</title>
     <style>
         :root { --primary: #1e3a8a; --bg: #f8fafc; --text: #334155; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; min-height: 100vh; }
-        .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
-        .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 100%; max-width: 360px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
-        .login-box h2 { color: var(--primary); margin-bottom: 20px; }
-        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
-        .sidebar { width: 260px; background: #0f172a; color: white; padding: 25px 15px; box-sizing: border-box; flex-shrink: 0; }
-        .sidebar h2 { text-align: center; margin-bottom: 30px; font-size: 20px; color: #38bdf8; }
-        .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; font-size: 16px; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
+        .sidebar { width: 260px; background: #0f172a; color: white; padding: 25px 15px; }
+        .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; font-size: 15px; }
         .menu-btn:hover, .menu-btn.active { background: #1e293b; color: white; }
-        .main-content { flex-grow: 1; padding: 40px; box-sizing: border-box; position: relative; }
+        .main-content { flex-grow: 1; padding: 40px; position: relative; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .badge-total { position: absolute; top: 30px; right: 40px; background: linear-gradient(135deg, #0284c7, #0369a1); color: white; width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3); }
-        .badge-total span { font-size: 24px; }
-        .badge-total small { font-size: 10px; opacity: 0.9; }
-        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
+        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #e2e8f0; }
         .card-appointment.Agendado { border-left-color: #3b82f6; }
-        .card-appointment.Concluído { border-left-color: #10b981; background: #f0fdf4; }
-        .card-appointment.Cancelado { border-left-color: #ef4444; background: #fef2f2; }
-        .card-appointment.Bloqueado { border-left-color: #f59e0b; background: #fffbeb; }
-        .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 5px; font-size: 13px; }
+        .card-appointment.Concluído { border-left-color: #10b981; }
+        .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; margin-top:10px; font-size: 13px; }
         .btn-success { background: #dcfce7; color: #15803d; }
         .btn-danger { background: #fee2e2; color: #b91c1c; }
-        .btn-edit { background: #fef9c3; color: #a16207; }
-        .box-config { background: white; padding: 25px; border-radius: 12px; max-width: 500px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
-        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
-        .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
-        .chart-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); max-width: 600px; margin-top: 20px; }
+        .btn-whats { background: #d1fae5; color: #047857; }
+        .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 9999; }
+        .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 300px; }
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
+        .login-box button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; }
     </style>
 </head>
 <body>
 
     <div id="loginModal" class="login-overlay">
         <div class="login-box">
-            <h2>Acesso Restrito 🔐</h2>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 20px;">Digite a senha secreta da Mikaely</p>
-            <input type="password" id="inputSenha" placeholder="••••••••">
-            <button class="btn-primary" onclick="autenticar()">Entrar no Painel</button>
-            <p id="erroLogin" style="color: #ef4444; margin-top: 10px; font-size: 14px; font-weight: 600;"></p>
+            <h2 style="color:#1e3a8a;">Acesso Restrito</h2>
+            <input type="password" id="inputSenha" placeholder="Senha da Mikaely">
+            <button onclick="autenticar()">Entrar no Painel</button>
         </div>
     </div>
 
     <div class="sidebar">
-        <h2>Mikaely Gestão de agenda</h2>
+        <h2 style="text-align: center; color:#38bdf8;">Mikaely Gestão</h2>
         <button class="menu-btn active" onclick="trocarAba('dashboard', this)">📅 Agendamentos</button>
-        <button class="menu-btn" onclick="trocarAba('config', this)">⚙️ Bloquear Agenda</button>
-        <button class="menu-btn" onclick="trocarAba('relatorios', this)">📊 Gráficos e Histórico</button>
+        <button class="menu-btn" onclick="trocarAba('config', this)">⛔ Bloquear Agenda</button>
     </div>
 
     <div class="main-content">
-        <div class="badge-total">
-            <span id="qtdHoje">0</span>
-            <small>Para Hoje</small>
-        </div>
-
         <div id="dashboard" class="tab-content active">
             <h2>Painel de Atendimentos</h2>
-            <p style="color: #64748b; margin-bottom: 30px;">Gerencie os pedidos de horários abaixo:</p>
-            <button onclick="carregarDadosGerais()" style="margin-bottom: 15px; padding: 8px; cursor: pointer;">🔄 Atualizar Lista</button>
-            <div id="listaAgendamentos">Carregando dados...</div>
+            <button onclick="carregarDadosGerais()" style="padding: 10px; border-radius: 6px; background:#e2e8f0; border:none; cursor:pointer; margin-bottom: 20px;">🔄 Atualizar Lista</button>
+            <div id="listaAgendamentos"></div>
         </div>
 
         <div id="config" class="tab-content">
-            <h2>Bloqueio e Travamento de Horários</h2>
-            <p style="color: #64748b; margin-bottom: 30px;">Trave um dia ou horário específico.</p>
-            <div class="box-config">
-                <div class="form-group"><label>Data de Fechamento:</label><input type="date" id="blockData"></div>
-                <div class="form-group">
-                    <label>Horário do Bloqueio:</label>
-                    <select id="blockHora">
-                        <option value="09:00">09:00</option>
-                        <option value="10:30">10:30</option>
-                        <option value="13:30">13:30</option>
-                        <option value="15:00">15:00</option>
-                        <option value="16:30">16:30</option>
-                    </select>
-                </div>
-                <button class="btn-primary" style="background: #f59e0b;" onclick="salvarBloqueio()">Bloquear Horário</button>
+            <h2>Travar Horários</h2>
+            <div style="background:white; padding: 20px; border-radius: 12px; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <label style="font-weight:bold;">Selecione a Data:</label>
+                <input type="date" id="blockData" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+                
+                <label style="font-weight:bold;">Selecione o Horário:</label>
+                <select id="blockHora" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
+                    <option value="DIA_INTEIRO">Bloquear o Dia Inteiro</option>
+                    <option value="09:00">09:00</option>
+                    <option value="10:30">10:30</option>
+                    <option value="13:30">13:30</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:30">16:30</option>
+                </select>
+                
+                <button onclick="salvarBloqueio()" style="width:100%; background:#ef4444; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Travar Agenda</button>
             </div>
-        </div>
-
-        <div id="relatorios" class="tab-content">
-            <h2>Relatórios de Performance</h2>
-            <div class="chart-container"><canvas id="graficoPico"></canvas></div>
         </div>
     </div>
 
     <script>
-    const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
-    let cacheDados = [];
-    let meuGrafico = null;
-
-    function autenticar() {
-        const senha = document.getElementById('inputSenha').value;
-        if (senha === "mika123") {
-            document.getElementById('loginModal').style.display = 'none';
-            carregarDadosGerais();
-        } else {
-            document.getElementById('erroLogin').innerText = "Senha incorreta! Tente novamente.";
-        }
-    }
-
-    function trocarAba(idAba, botao) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
-        document.getElementById(idAba).classList.add('active');
-        botao.classList.add('active');
-        if (idAba === 'relatorios') renderizarGrafico();
-    }
-
-    function carregarDadosGerais() {
-        document.getElementById('listaAgendamentos').innerHTML = "Buscando dados da planilha...";
+        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; // <-- COLOQUE SUA NOVA URL AQUI
         
-        // O getTime() no final impede o navegador de usar cache antigo e dar erro fantasma!
-        fetch(URL_API + "?nocache=" + new Date().getTime())
-            .then(res => res.json())
-            .then(dados => {
-                cacheDados = dados;
-                montarListaAgendamentos();
-                calcularBadgeHoje();
-            }).catch(() => {
-                document.getElementById('listaAgendamentos').innerHTML = "<p style='color:red;'>Nenhum dado encontrado na planilha ainda.</p>";
-            });
-    }
-
-    function calcularBadgeHoje() {
-        const hojeIso = new Date().toISOString().substring(0,10);
-        const totalHoje = cacheDados.filter(item => item.data.substring(0,10) === hojeIso && item.status === 'Agendado').length;
-        document.getElementById('qtdHoje').innerText = totalHoje;
-    }
-
-    function montarListaAgendamentos() {
-        const container = document.getElementById('listaAgendamentos');
-        container.innerHTML = "";
-        if (cacheDados.length === 0) {
-            container.innerHTML = "<p>Nenhuma agenda registrada ainda. Os clientes vão aparecer aqui!</p>";
-            return;
+        function autenticar() {
+            if (document.getElementById('inputSenha').value === "mika123") {
+                document.getElementById('loginModal').style.display = 'none';
+                carregarDadosGerais();
+            } else alert("Senha Incorreta!");
         }
-        cacheDados.forEach(item => {
-            let botoesAcao = "";
-            if (item.status === 'Agendado') {
-                botoesAcao = `
-                    <div class="actions">
-                        <button class="btn-success" onclick="mudarStatus('${item.id}', 'Concluído')">Concluir</button>
-                        <button class="btn-danger" onclick="cancelarComJustificativa('${item.id}')">Cancelar</button>
-                        <button class="btn-edit" onclick="reagendar('${item.id}')">Editar</button>
-                    </div>
-                `;
-            }
-            container.innerHTML += `
-                <div class="card-appointment ${item.status}">
-                    <div>
-                        <strong>${item.nome}</strong> <br>
-                        <span style="font-size:14px; color:#64748b;">📅 Dia: ${item.data.substring(0,10)} às ⏰ ${item.hora}</span>
-                        ${item.justificativa ? `<br><small style="color:red"><b>Motivo:</b> ${item.justificativa}</small>` : ''}
-                    </div>
-                    <div>
-                        <span style="font-weight:bold; font-size:12px; padding:4px 8px; border-radius:12px; background:#e2e8f0;">${item.status}</span>
-                        ${botoesAcao}
-                    </div>
-                </div>
-            `;
-        });
-    }
 
-    // Função de envio corrigida para aceitar edição e bloqueio sem sumir os dados
-    function dispararAcao(pacote, mensagemSucesso) {
-        fetch(URL_API, {
-            method: 'POST',
-            body: JSON.stringify(pacote)
-        }).then(res => res.json())
-          .then(() => {
-            alert(mensagemSucesso);
-            carregarDadosGerais(); // Recarrega a tela automaticamente após salvar
-        });
-    }
-
-    function mudarStatus(id, status, justificativa = "") {
-        dispararAcao({ acao: "atualizar_status", id: id, status: status, justificativa: justificativa }, "Status atualizado com sucesso!");
-    }
-
-    function cancelarComJustificativa(id) {
-        if (confirm("Tem certeza que deseja CANCELAR este atendimento?")) {
-            let motivo = prompt("Digite o motivo do cancelamento para ficar salvo no histórico:");
-            if (motivo) mudarStatus(id, 'Cancelado', motivo);
+        function trocarAba(idAba, botao) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById(idAba).classList.add('active');
+            botao.classList.add('active');
         }
-    }
 
-    function reagendar(id) {
-        let novaData = prompt("Digite a nova data (Formato: AAAA-MM-DD):");
-        let novaHora = prompt("Digite o novo horário (Ex: 14:00):");
-        if (novaData && novaHora) {
-            dispararAcao({ acao: "editar", id: id, data: novaData, hora: novaHora }, "Horário reagendado com sucesso!");
+        function carregarDadosGerais() {
+            document.getElementById('listaAgendamentos').innerHTML = "Buscando dados...";
+            fetch(URL_API + "?nocache=" + new Date().getTime())
+                .then(res => res.json())
+                .then(dados => {
+                    const container = document.getElementById('listaAgendamentos');
+                    container.innerHTML = "";
+                    
+                    const dadosInvertidos = dados.reverse(); // Mostra os mais recentes primeiro
+                    
+                    dadosInvertidos.forEach(item => {
+                        let acoes = '';
+                        if (item.status === 'Agendado') {
+                            acoes = `
+                                <div class="actions">
+                                    <button class="btn-success" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Concluído'})">Marcar Concluído</button>
+                                    <button class="btn-danger" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Cancelado'})">Cancelar</button>
+                                    ${item.whatsapp ? `<a href="https://wa.me/55${item.whatsapp.replace(/\D/g, '')}" target="_blank"><button class="btn-whats">Chamar no WhatsApp</button></a>` : ''}
+                                </div>
+                            `;
+                        }
+                        
+                        container.innerHTML += `
+                            <div class="card-appointment ${item.status}">
+                                <strong>${item.nome}</strong> 
+                                <span style="float:right; font-weight:bold; font-size:12px;">${item.status}</span><br>
+                                <span style="font-size:14px; color:#64748b;">📅 ${item.data.substring(0,10)} às ⏰ ${item.hora === 'DIA_INTEIRO' ? 'Dia Inteiro Fechado' : item.hora}</span><br>
+                                ${item.whatsapp ? `<span style="font-size:13px; color:#10b981;">📱 ${item.whatsapp}</span>` : ''}
+                                ${acoes}
+                            </div>
+                        `;
+                    });
+                });
         }
-    }
 
-    function salvarBloqueio() {
-        const data = document.getElementById('blockData').value;
-        const hora = document.getElementById('blockHora').value;
-        if(!data || !hora) return alert("Preencha a data e hora que deseja bloquear!");
-        dispararAcao({ acao: "criar", data: data, hora: hora, nome: "Travado (Mikaely)", status: 'Bloqueado' }, "Horário bloqueado com sucesso!");
-    }
+        function dispararAcao(pacote) {
+            fetch(URL_API, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(pacote) })
+                .then(() => {
+                    alert("Ação realizada com sucesso!");
+                    setTimeout(carregarDadosGerais, 1000); // Recarrega a tela logo após enviar
+                });
+        }
 
-    function renderizarGrafico() {
-        const horas = ["09:00", "10:30", "13:30", "15:00", "16:30"];
-        const contagem = horas.map(h => cacheDados.filter(item => item.hora === h && item.status === 'Concluído').length);
-        const ctx = document.getElementById('graficoPico').getContext('2d');
-        if (meuGrafico) meuGrafico.destroy();
-        meuGrafico = new Chart(ctx, {
-            type: 'bar',
-            data: { labels: horas, datasets: [{ label: 'Serviços Realizados', data: contagem, backgroundColor: '#d81b60', borderRadius: 6 }] },
-            options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
-        });
-    }
-</script>
+        function salvarBloqueio() {
+            const data = document.getElementById('blockData').value;
+            const hora = document.getElementById('blockHora').value;
+            if(!data) return alert("Selecione uma data!");
+            dispararAcao({ acao: "criar", data: data, hora: hora, nome: "🔒 BLOQUEIO DA MIKAELY", status: 'Bloqueado' });
+        }
+    </script>
 </body>
 </html>
