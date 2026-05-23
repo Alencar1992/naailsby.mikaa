@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agenda Mikaely - Designer</title>
+    <style>
+        /* ============================================================================
+           BLOCO 1: ESTILIZAÇÃO VISUAL (CSS)
+           ============================================================================ */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fdf0f5; /* Rosa bem clarinho */
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            text-align: center;
+            color: #d81b60; /* Rosa escuro */
+        }
+        /* Botões de navegação entre as visões */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #d81b60;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #ad144d;
+        }
+        .escondido {
+            display: none; /* Classe para esconder blocos da tela */
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .lista-agendamentos {
+            background: #f9f9f9;
+            padding: 10px;
+            border-left: 4px solid #d81b60;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Mikaa Nail Designer 💅</h1>
+        
+        <!-- Menu para alternar as visões -->
+        <div class="nav-buttons">
+            <button onclick="mudarVisao('cliente')">Visão Cliente</button>
+            <button onclick="mudarVisao('mikaely')">Visão Mikaely (Admin)</button>
+        </div>
+
+        <!-- ============================================================================
+             BLOCO 2: VISÃO DO CLIENTE
+             ============================================================================ -->
+        <div id="visao-cliente">
+            <h2>Agende seu Horário</h2>
+            <div class="form-group">
+                <label for="nomeCliente">Seu Nome:</label>
+                <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
+            </div>
+            <div class="form-group">
+                <label for="dataCliente">Escolha o Dia:</label>
+                <input type="date" id="dataCliente">
+            </div>
+            <div class="form-group">
+                <label for="horaCliente">Escolha o Horário:</label>
+                <select id="horaCliente">
+                    <option value="">Selecione um horário...</option>
+                    <option value="09:00">09:00</option>
+                    <option value="10:00">10:00</option>
+                    <option value="11:00">11:00</option>
+                    <option value="14:00">14:00</option>
+                    <option value="15:00">15:00</option>
+                    <option value="16:00">16:00</option>
+                </select>
+            </div>
+            <button onclick="salvarAgendamento('Agendado')" style="width: 100%;">Confirmar Agendamento</button>
+            <p id="msgCliente" style="text-align: center; color: green; margin-top: 10px;"></p>
+        </div>
+
+        <!-- ============================================================================
+             BLOCO 3: VISÃO DA MIKAELY (ADMIN)
+             ============================================================================ -->
+        <div id="visao-mikaely" class="escondido">
+            <h2>Gerenciamento da Agenda</h2>
+            
+            <!-- Ferramenta de Bloqueio de Horário -->
+            <div style="background: #ffebee; padding: 15px; border-radius: 5px; margin-bottom: 20px;">
+                <h3>Travar Horário / Indisponível</h3>
+                <div class="form-group">
+                    <label>Data:</label>
+                    <input type="date" id="dataMikaely">
+                </div>
+                <div class="form-group">
+                    <label>Horário:</label>
+                    <select id="horaMikaely">
+                        <option value="09:00">09:00</option>
+                        <option value="10:00">10:00</option>
+                        <option value="11:00">11:00</option>
+                        <option value="14:00">14:00</option>
+                        <option value="15:00">15:00</option>
+                        <option value="16:00">16:00</option>
+                    </select>
+                </div>
+                <button onclick="salvarAgendamento('Bloqueado')" style="background-color: #d32f2f;">Bloquear Este Horário</button>
+            </div>
+
+            <!-- Lista para visualizar os agendamentos -->
+            <h3>Agenda Atual:</h3>
+            <button onclick="carregarAgenda()">Atualizar Lista</button>
+            <div id="listaCompleta" style="margin-top: 15px;">
+                <!-- Os dados carregados da planilha aparecerão aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================================
+         BLOCO 4: LÓGICA DE PROGRAMAÇÃO (JAVASCRIPT)
+         ============================================================================ -->
+    <script>
+        // ATENÇÃO: Cole aqui a URL gerada pelo Google Apps Script ao publicar como Web App!
+        const URL_BACKEND = "https://script.google.com/macros/s/AKfycbys0Bdjujqh67UJfucbGqr4NPZLynGMuKoG6-7PnrUXPXorm2ImBvef_2SRVCC389WB/exec"; 
+
+        /**
+         * Função para alternar as telas entre Cliente e Mikaely
+         */
+        function mudarVisao(visao) {
+            document.getElementById('visao-cliente').classList.add('escondido');
+            document.getElementById('visao-mikaely').classList.add('escondido');
+            
+            if (visao === 'cliente') {
+                document.getElementById('visao-cliente').classList.remove('escondido');
+            } else {
+                document.getElementById('visao-mikaely').classList.remove('escondido');
+                carregarAgenda(); // Já carrega a lista atualizada quando a Mikaely entra
+            }
+        }
+
+        /**
+         * Função para Salvar dados na Planilha (Serve tanto para Agendar quanto para Bloquear)
+         */
+        function salvarAgendamento(status) {
+            let nome = "";
+            let data = "";
+            let hora = "";
+
+            // Verifica de qual tela o botão foi clicado
+            if (status === 'Agendado') {
+                nome = document.getElementById('nomeCliente').value;
+                data = document.getElementById('dataCliente').value;
+                hora = document.getElementById('horaCliente').value;
+                
+                if(!nome || !data || !hora) {
+                    alert("Por favor, preencha todos os campos!");
+                    return;
+                }
+            } else if (status === 'Bloqueado') {
+                nome = "Mikaely - Bloqueado";
+                data = document.getElementById('dataMikaely').value;
+                hora = document.getElementById('horaMikaely').value;
+                
+                if(!data || !hora) {
+                    alert("Por favor, selecione data e hora para bloquear!");
+                    return;
+                }
+            }
+
+            // Pacote de informações que será enviado ao gerente (Apps Script)
+            const pacote = {
+                data: data,
+                hora: hora,
+                nome: nome,
+                status: status
+            };
+
+            // Enviando (POST) os dados para a URL do Apps Script
+            fetch(URL_BACKEND, {
+                method: 'POST',
+                mode: 'no-cors', // Evita bloqueios de segurança do navegador no início
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(pacote)
+            }).then(() => {
+                alert(status === 'Agendado' ? "Horário agendado com sucesso!" : "Horário bloqueado na agenda!");
+                // Limpa os campos após o sucesso
+                document.getElementById('nomeCliente').value = "";
+                document.getElementById('dataCliente').value = "";
+                document.getElementById('horaCliente').value = "";
+            }).catch(erro => {
+                console.error("Erro ao salvar:", erro);
+                alert("Houve um erro de comunicação. Tente novamente.");
+            });
+        }
+
+        /**
+         * Função para a Mikaely ler os dados da Planilha e exibir na tela
+         */
+        function carregarAgenda() {
+            const divLista = document.getElementById('listaCompleta');
+            divLista.innerHTML = "Carregando a agenda da planilha...";
+
+            // Buscando (GET) os dados da URL do Apps Script
+            fetch(URL_BACKEND)
+                .then(resposta => resposta.json())
+                .then(dados => {
+                    divLista.innerHTML = ""; // Limpa o texto de "Carregando"
+                    if(dados.length === 0) {
+                        divLista.innerHTML = "<p>Nenhum agendamento ou bloqueio encontrado.</p>";
+                        return;
+                    }
+                    
+                    // Cria uma caixinha visual para cada linha da planilha
+                    dados.forEach(item => {
+                        divLista.innerHTML += `
+                            <div class="lista-agendamentos">
+                                <strong>Data:</strong> ${item.data.substring(0,10)} | 
+                                <strong>Hora:</strong> ${item.hora} <br>
+                                <strong>Cliente/Status:</strong> ${item.nome} (${item.status})
+                            </div>
+                        `;
+                    });
+                })
+                .catch(erro => {
+                    divLista.innerHTML = "Erro ao carregar a agenda. Verifique a URL do Apps Script.";
+                    console.error("Erro ao carregar:", erro);
+                });
+        }
+    </script>
+</body>
+</html>
