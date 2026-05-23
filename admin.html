@@ -3,53 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamentos - Mikaa Nail Designer</title>
+    <title>Painel - Mikaely Nails</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #1e3a8a; --bg: #f8fafc; --text: #334155; }
         body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; display: flex; min-height: 100vh; }
-        
-        /* Modal de Login Bonito */
         .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(15, 23, 42, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999; transition: 0.5s; }
         .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 100%; max-width: 360px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
         .login-box h2 { color: var(--primary); margin-bottom: 20px; }
         .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 16px; text-align: center; }
-        
-        /* Layout Geral (Menu Lateral + Conteúdo) */
         .sidebar { width: 260px; background: #0f172a; color: white; padding: 25px 15px; box-sizing: border-box; flex-shrink: 0; }
         .sidebar h2 { text-align: center; margin-bottom: 30px; font-size: 20px; color: #38bdf8; }
         .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; font-size: 16px; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; }
         .menu-btn:hover, .menu-btn.active { background: #1e293b; color: white; }
-        
         .main-content { flex-grow: 1; padding: 40px; box-sizing: border-box; position: relative; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        
-        /* Card Redondo Flutuante da Direita */
         .badge-total { position: absolute; top: 30px; right: 40px; background: linear-gradient(135deg, #0284c7, #0369a1); color: white; width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3); }
         .badge-total span { font-size: 24px; }
         .badge-total small { font-size: 10px; opacity: 0.9; }
-
-        /* Estilização das Listas e Tabelas */
         .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .card-appointment.Agendado { border-left-color: #3b82f6; }
         .card-appointment.Concluído { border-left-color: #10b981; background: #f0fdf4; }
         .card-appointment.Cancelado { border-left-color: #ef4444; background: #fef2f2; }
         .card-appointment.Bloqueado { border-left-color: #f59e0b; background: #fffbeb; }
-        
         .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 5px; font-size: 13px; }
         .btn-success { background: #dcfce7; color: #15803d; }
         .btn-danger { background: #fee2e2; color: #b91c1c; }
         .btn-edit { background: #fef9c3; color: #a16207; }
-        
-        /* Elementos de Formulários na Admin */
         .box-config { background: white; padding: 25px; border-radius: 12px; max-width: 500px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 600; }
         .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 6px; }
         .btn-primary { background: var(--primary); color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; }
-        
-        /* Container do Gráfico */
         .chart-container { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); max-width: 600px; margin-top: 20px; }
     </style>
 </head>
@@ -66,7 +52,7 @@
     </div>
 
     <div class="sidebar">
-        <h2>Mikaely Gestão</h2>
+        <h2>Mikaely Gestão de agenda</h2>
         <button class="menu-btn active" onclick="trocarAba('dashboard', this)">📅 Agendamentos</button>
         <button class="menu-btn" onclick="trocarAba('config', this)">⚙️ Bloquear Agenda</button>
         <button class="menu-btn" onclick="trocarAba('relatorios', this)">📊 Gráficos e Histórico</button>
@@ -81,17 +67,15 @@
         <div id="dashboard" class="tab-content active">
             <h2>Painel de Atendimentos</h2>
             <p style="color: #64748b; margin-bottom: 30px;">Gerencie os pedidos de horários abaixo:</p>
-            <div id="listaAgendamentos">Carregando dados da planilha...</div>
+            <button onclick="carregarDadosGerais()" style="margin-bottom: 15px; padding: 8px; cursor: pointer;">🔄 Atualizar Lista</button>
+            <div id="listaAgendamentos">Carregando dados...</div>
         </div>
 
         <div id="config" class="tab-content">
             <h2>Bloqueio e Travamento de Horários</h2>
-            <p style="color: #64748b; margin-bottom: 30px;">Trave um dia ou horário específico para que nenhum cliente consiga agendar.</p>
+            <p style="color: #64748b; margin-bottom: 30px;">Trave um dia ou horário específico.</p>
             <div class="box-config">
-                <div class="form-group">
-                    <label>Data de Fechamento:</label>
-                    <input type="date" id="blockData">
-                </div>
+                <div class="form-group"><label>Data de Fechamento:</label><input type="date" id="blockData"></div>
                 <div class="form-group">
                     <label>Horário do Bloqueio:</label>
                     <select id="blockHora">
@@ -108,15 +92,12 @@
 
         <div id="relatorios" class="tab-content">
             <h2>Relatórios de Performance</h2>
-            <p style="color: #64748b;">Análise detalhada de picos de atendimento:</p>
-            <div class="chart-container">
-                <canvas id="graficoPico"></canvas>
-            </div>
+            <div class="chart-container"><canvas id="graficoPico"></canvas></div>
         </div>
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; 
+        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
         let cacheDados = [];
         let meuGrafico = null;
 
@@ -139,12 +120,15 @@
         }
 
         function carregarDadosGerais() {
+            document.getElementById('listaAgendamentos').innerHTML = "Buscando dados da planilha...";
             fetch(URL_API)
                 .then(res => res.json())
                 .then(dados => {
                     cacheDados = dados;
                     montarListaAgendamentos();
                     calcularBadgeHoje();
+                }).catch(() => {
+                    document.getElementById('listaAgendamentos').innerHTML = "Erro ao buscar dados.";
                 });
         }
 
@@ -157,12 +141,10 @@
         function montarListaAgendamentos() {
             const container = document.getElementById('listaAgendamentos');
             container.innerHTML = "";
-            
             if (cacheDados.length === 0) {
-                container.innerHTML = "<p>Nenhum agendamento registrado até o momento.</p>";
+                container.innerHTML = "<p>Nenhum registro encontrado.</p>";
                 return;
             }
-
             cacheDados.forEach(item => {
                 let botoesAcao = "";
                 if (item.status === 'Agendado') {
@@ -174,7 +156,6 @@
                         </div>
                     `;
                 }
-
                 container.innerHTML += `
                     <div class="card-appointment ${item.status}">
                         <div>
@@ -191,15 +172,26 @@
             });
         }
 
+        // Função de envio genérica com NO-CORS para comandos de edição/exclusão
+        function dispararAcao(pacote, mensagemSucesso) {
+            fetch(URL_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(pacote)
+            }).then(() => {
+                alert(mensagemSucesso);
+                setTimeout(carregarDadosGerais, 1500); // Atualiza após 1,5 segundos para dar tempo ao Google
+            });
+        }
+
         function mudarStatus(id, status, justificativa = "") {
-            const pacote = { acao: "atualizar_status", id: id, status: status, justificativa: justificativa };
-            fetch(URL_API, { method: 'POST', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(pacote) })
-                .then(() => { alert("Atualizado!"); carregarDadosGerais(); });
+            dispararAcao({ acao: "atualizar_status", id: id, status: status, justificativa: justificativa }, "Status atualizado!");
         }
 
         function cancelarComJustificativa(id) {
             if (confirm("Tem certeza que deseja CANCELAR este atendimento?")) {
-                let motivo = prompt("Digite o motivo/justificativa do cancelamento:");
+                let motivo = prompt("Digite o motivo do cancelamento:");
                 if (motivo) mudarStatus(id, 'Cancelado', motivo);
             }
         }
@@ -208,9 +200,7 @@
             let novaData = prompt("Digite a nova data (AAAA-MM-DD):");
             let novaHora = prompt("Digite o novo horário (Ex: 14:00):");
             if (novaData && novaHora) {
-                const pacote = { acao: "editar", id: id, data: novaData, hora: novaHora };
-                fetch(URL_API, { method: 'POST', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(pacote) })
-                    .then(() => { alert("Reagendado com sucesso!"); carregarDadosGerais(); });
+                dispararAcao({ acao: "editar", id: id, data: novaData, hora: novaHora }, "Reagendado com sucesso!");
             }
         }
 
@@ -218,30 +208,17 @@
             const data = document.getElementById('blockData').value;
             const hora = document.getElementById('blockHora').value;
             if(!data || !hora) return alert("Preencha data e hora!");
-            
-            const pacote = { acao: "criar", data: data, hora: hora, nome: "Horário Travado (Mikaely)", status: 'Bloqueado' };
-            fetch(URL_API, { method: 'POST', headers: {'Content-Type': 'text/plain'}, body: JSON.stringify(pacote) })
-                .then(() => { alert("Horário bloqueado!"); carregarDadosGerais(); });
+            dispararAcao({ acao: "criar", data: data, hora: hora, nome: "Horário Travado", status: 'Bloqueado' }, "Horário bloqueado!");
         }
 
         function renderizarGrafico() {
             const horas = ["09:00", "10:30", "13:30", "15:00", "16:30"];
             const contagem = horas.map(h => cacheDados.filter(item => item.hora === h && item.status === 'Concluído').length);
-
             const ctx = document.getElementById('graficoPico').getContext('2d');
-            if (meuGrafico) meuGrafico.destroy(); // Reseta o gráfico para não duplicar na tela
-
+            if (meuGrafico) meuGrafico.destroy();
             meuGrafico = new Chart(ctx, {
                 type: 'bar',
-                data: {
-                    labels: horas,
-                    datasets: [{
-                        label: 'Serviços Realizados por Horário',
-                        data: contagem,
-                        backgroundColor: '#1e3a8a',
-                        borderRadius: 6
-                    }]
-                },
+                data: { labels: horas, datasets: [{ label: 'Serviços Realizados', data: contagem, backgroundColor: '#1e3a8a', borderRadius: 6 }] },
                 options: { responsive: true, scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
             });
         }
