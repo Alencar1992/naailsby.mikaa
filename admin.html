@@ -5,60 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Painel Mikaely</title>
     <style>
-        :root { --primary: #1e3a8a; --bg: rgba(248, 250, 252, 0.9); }
+        :root { --primary: #1e3a8a; }
         body { 
-            font-family: 'Birds of Paradise', Bigtimes; margin: 0; display: flex; min-height: 100vh;
-            background-color: #fef1f6; /* Defina uma cor de fundo (ex: o rosa claro) */
-            background-image: url('logomika.png');
-            background-repeat: no-repeat;
-            background-position: center center;
-            background-attachment: fixed;
-            background-size: contain; /* Adicione esta linha */
+            font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; min-height: 100vh;
+            background: url('logomika.png') no-repeat center center fixed;
+            background-size: cover;
         }
-        .sidebar { width: 260px; background: rgba(15, 23, 42, 0.95); color: white; padding: 25px 15px; }
+        .sidebar { width: 260px; background: rgba(15, 23, 42, 0.96); color: white; padding: 25px 15px; box-sizing: border-box; flex-shrink: 0; }
         .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: bold; font-size: 15px; }
         .menu-btn.active { background: #1e293b; color: white; }
-        .main-content { flex-grow: 1; padding: 40px; position: relative; background: var(--bg); }
-        .tab-content { display: none; }
+        
+        .main-content { flex-grow: 1; padding: 40px; position: relative; background: rgba(255,255,255,0.05); box-sizing: border-box; }
+        .tab-content { display: none; background: rgba(255, 255, 255, 0.95); padding: 30px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); max-width: 800px; }
         .tab-content.active { display: block; }
         
-        /* O Card Redondo Restaurado */
-        .badge-total { position: absolute; top: 30px; right: 40px; background: linear-gradient(135deg, #d81b60, #ad144d); color: white; width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        /* CARD REDONDO FIXO E VISÍVEL */
+        .badge-total { 
+            position: fixed; top: 20px; right: 20px; 
+            background: linear-gradient(135deg, #d81b60, #ad144d); 
+            color: white; width: 90px; height: 90px; 
+            border-radius: 50%; display: flex; 
+            flex-direction: column; justify-content: center; 
+            align-items: center; font-weight: bold; 
+            box-shadow: 0 10px 15px rgba(0,0,0,0.3); 
+            z-index: 999;
+        }
         .badge-total span { font-size: 26px; }
         .badge-total small { font-size: 11px; opacity: 0.9; }
 
-        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; border-left: 5px solid #e2e8f0; }
+        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #e2e8f0; display: flex; justify-content: space-between; align-items: center; }
         .card-appointment.Agendado { border-left-color: #3b82f6; }
-        .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; margin-top:10px; }
-        .btn-success { background: #dcfce7; color: #15803d; } .btn-danger { background: #fee2e2; color: #b91c1c; } .btn-whats { background: #d1fae5; color: #047857; }
+        .card-appointment.Concluído { border-left-color: #10b981; background: #f0fdf4; }
+        .card-appointment.Cancelado { border-left-color: #ef4444; background: #fef2f2; }
+        .card-appointment.Bloqueado { border-left-color: #f59e0b; background: #fffbeb; }
+        
+        .actions button { padding: 8px 14px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 5px; font-size: 13px; }
+        .btn-success { background: #dcfce7; color: #15803d; } .btn-danger { background: #fee2e2; color: #b91c1c; } .btn-whats { background: #d1fae5; color: #047857; text-decoration: none; display: inline-block; padding: 8px 14px; border-radius: 6px; font-weight: 600; font-size: 13px; }
         
         .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 300px; }
-        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
-        .login-box button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; }
+        .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; font-size: 16px; text-align: center; }
+        .login-box button { width: 100%; background: #d81b60; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         /* Calendário Admin */
-        .calendario-box { background: white; padding: 20px; border-radius: 12px; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #888; margin-bottom: 5px; }
-        .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-        .dia { padding: 10px 0; text-align: center; background: #f8fafc; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; }
+        .calendario-box { background: white; padding: 20px; border-radius: 12px; max-width: 400px; border: 1px solid #ddd; margin-top: 15px; }
+        .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; color: #666; font-weight: bold; margin-bottom: 8px; }
+        .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+        .dia { padding: 12px 0; text-align: center; background: #f8fafc; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; }
         .dia:hover { background: #fee2e2; border-color: #ef4444; color: #ef4444; font-weight: bold; }
         .dia.vazio { background: transparent; border: none; }
         
         .modal-admin { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
-        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 300px; }
-        .modal-content select, .modal-content button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 6px; }
+        .modal-content { background: white; padding: 25px; border-radius: 12px; width: 320px; }
+        .modal-content select, .modal-content button { width: 100%; padding: 12px; margin-top: 12px; border-radius: 6px; box-sizing: border-box; font-size: 15px; }
     </style>
 </head>
 <body>
 
     <div id="loginModal" class="login-overlay">
-        <div class="login-box"><h2 style="color:#1e3a8a;">Acesso Restrito</h2><input type="password" id="inputSenha" placeholder="Senha da Mikaely"><button onclick="autenticar()">Entrar no Painel</button></div>
+        <div class="login-box">
+            <h2 style="color:#d81b60; margin-top:0;">Painel Administrativo</h2>
+            <input type="password" id="inputSenha" placeholder="Senha da Mikaely">
+            <button onclick="autenticar()">Entrar no Painel</button>
+        </div>
     </div>
 
     <div class="sidebar">
-        <h2 style="text-align: center; color:#38bdf8;">Mikaely Gestão</h2>
-        <button class="menu-btn active" onclick="trocarAba('dashboard', this)">📅 Agendamentos</button>
+        <h2 style="text-align: center; color:#38bdf8; margin-bottom: 30px;">Mikaely Gestão</h2>
+        <button class="menu-btn active" onclick="trocarAba('dashboard', this)">📅 Ver Agendamentos</button>
         <button class="menu-btn" onclick="trocarAba('config', this)">⛔ Bloquear Agenda</button>
     </div>
 
@@ -66,16 +80,16 @@
         <div class="badge-total"><span id="qtdHoje">0</span><small>Hoje</small></div>
 
         <div id="dashboard" class="tab-content active">
-            <h2>Painel de Atendimentos</h2>
-            <button onclick="carregarDadosGerais()" style="padding: 10px; border-radius: 6px; background:#e2e8f0; border:none; cursor:pointer; margin-bottom: 20px;">🔄 Atualizar Lista</button>
+            <h2 style="color:#d81b60; margin-top:0;">Painel de Atendimentos</h2>
+            <button onclick="carregarDadosGerais()" style="padding: 10px 15px; border-radius: 6px; background:#e2e8f0; border:none; cursor:pointer; margin-bottom: 20px; font-weight: bold;">🔄 Sincronizar com Planilha</button>
             <div id="listaAgendamentos"></div>
         </div>
 
         <div id="config" class="tab-content">
-            <h2>Bloquear Datas e Horários</h2>
-            <p>Clique no dia do calendário abaixo para travar um horário:</p>
+            <h2 style="color:#ef4444; margin-top:0;">Bloquear Datas e Horários</h2>
+            <p>Selecione um dia no calendário administrativo para aplicar um travamento:</p>
             <div class="calendario-box">
-                <div style="text-align: center; font-weight: bold; margin-bottom: 10px;" id="mesAdminStr"></div>
+                <div style="text-align: center; font-weight: bold; margin-bottom: 10px; color:#d81b60;" id="mesAdminStr"></div>
                 <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
                 <div class="grid-calendario" id="gridDiasAdmin"></div>
             </div>
@@ -86,24 +100,49 @@
         <div class="modal-content">
             <h3 style="margin-top:0; color:#ef4444;">Travar: <span id="dataBlockStr"></span></h3>
             <input type="hidden" id="dataBlockISO">
-            <label>Qual horário deseja bloquear?</label>
+            <label style="font-weight: bold;">Selecione o que bloquear:</label>
             <select id="horaBlock">
-                <option value="DIA_INTEIRO">Bloquear o Dia Todo</option>
-                <option value="09:00">09:00</option><option value="10:30">10:30</option>
-                <option value="13:30">13:30</option><option value="15:00">15:00</option>
-                <option value="16:30">16:30</option>
+                <option value="DIA_INTEIRO">Bloquear o Dia Inteiro</option>
+                <option value="00:00">00:00</option>
+                <option value="01:00">01:00</option>
+                <option value="02:00">02:00</option>
+                <option value="03:00">03:00</option>
+                <option value="04:00">04:00</option>
+                <option value="05:00">05:00</option>
+                <option value="06:00">06:00</option>
+                <option value="07:00">07:00</option>
+                <option value="08:00">08:00</option>
+                <option value="09:00">09:00</option>
+                <option value="10:00">10:00</option>
+                <option value="11:00">11:00</option>
+                <option value="12:00">12:00</option>
+                <option value="13:00">13:00</option>
+                <option value="14:00">14:00</option>
+                <option value="15:00">15:00</option>
+                <option value="16:00">16:00</option>
+                <option value="17:00">17:00</option>
+                <option value="18:00">18:00</option>
+                <option value="19:00">19:00</option>
+                <option value="20:00">20:00</option>
+                <option value="21:00">21:00</option>
+                <option value="22:00">22:00</option>
+                <option value="23:00">23:00</option>
             </select>
-            <button onclick="salvarBloqueio()" style="background:#ef4444; color:white; border:none; font-weight:bold;">Confirmar Bloqueio</button>
-            <button onclick="document.getElementById('modalBloqueio').style.display='none'" style="background:#eee; border:none;">Cancelar</button>
+            <button onclick="salvarBloqueio()" style="background:#ef4444; color:white; border:none; font-weight:bold; cursor:pointer;">Confirmar Bloqueio</button>
+            <button onclick="document.getElementById('modalBloqueio').style.display='none'" style="background:#e2e8f0; border:none; cursor:pointer;">Cancelar</button>
         </div>
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycbwI36hPvhQLC74viNy-FkgyrDOy-eVhAPbYbaslW-gKyJmeQyV0f3kS8OSEZygoGUUC/exec"; 
+        // COLOQUE A SUA NOVA URL GERADA NO PASSO 1 AQUI:
+        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; 
+        let cacheDados = [];
         
         function autenticar() {
             if (document.getElementById('inputSenha').value === "mika123") {
-                document.getElementById('loginModal').style.display = 'none'; carregarDadosGerais();
+                document.getElementById('loginModal').style.display = 'none'; 
+                carregarDadosGerais();
+                montarCalendarioAdmin();
             } else alert("Senha Incorreta!");
         }
 
@@ -114,38 +153,57 @@
         }
 
         function carregarDadosGerais() {
-            document.getElementById('listaAgendamentos').innerHTML = "Buscando dados...";
+            document.getElementById('listaAgendamentos').innerHTML = "Buscando dados em tempo real...";
             fetch(URL_API + "?nocache=" + new Date().getTime()).then(res => res.json()).then(dados => {
+                cacheDados = dados;
                 const container = document.getElementById('listaAgendamentos'); container.innerHTML = "";
                 
-                // Cálculo do Card Redondo
-                const hojeIso = new Date().toISOString().substring(0,10);
-                document.getElementById('qtdHoje').innerText = dados.filter(i => i.data.substring(0,10) === hojeIso && i.status === 'Agendado').length;
+                // Atualização do Card Redondo (Hoje)
+                const hoje = new Date();
+                let hojeIso = `${hoje.getFullYear()}-${String(hoje.getMonth()+1).padStart(2,'0')}-${String(hoje.getDate()).padStart(2,'0')}`;
+                document.getElementById('qtdHoje').innerText = dados.filter(i => i.data === hojeIso && i.status === 'Agendado').length;
 
-                dados.reverse().forEach(item => {
-                    let acoes = '';
+                if(dados.length === 0) {
+                    container.innerHTML = "<p>Nenhum registro encontrado na planilha.</p>";
+                    return;
+                }
+
+                dados.slice().reverse().forEach(item => {
+                    let btnAcoes = '';
                     if (item.status === 'Agendado') {
-                        acoes = `<div class="actions">
-                                    <button class="btn-success" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Concluído'})">Concluir</button>
-                                    <button class="btn-danger" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Cancelado'})">Cancelar</button>
-                                    ${item.whatsapp ? `<a href="https://wa.me/55${item.whatsapp.replace(/\D/g, '')}" target="_blank"><button class="btn-whats">WhatsApp</button></a>` : ''}
-                                 </div>`;
+                        btnAcoes = `<div class="actions">
+                                        <button class="btn-success" onclick="mudarStatus('${item.id}', 'Concluído')">Concluir</button>
+                                        <button class="btn-danger" onclick="mudarStatus('${item.id}', 'Cancelado')">Cancelar</button>
+                                        ${item.whatsapp ? `<a class="btn-whats" href="https://wa.me/55${item.whatsapp.replace(/\D/g, '')}" target="_blank">WhatsApp</a>` : ''}
+                                     </div>`;
                     }
+                    
+                    let exibicaoHora = item.hora === 'DIA_INTEIRO' ? 'DIA INTEIRO FECHADO' : item.hora;
+                    
                     container.innerHTML += `<div class="card-appointment ${item.status}">
-                        <strong>${item.nome}</strong> <span style="float:right; font-weight:bold; font-size:12px;">${item.status}</span><br>
-                        <span style="font-size:14px; color:#64748b;">📅 ${item.data.substring(0,10)} às ⏰ ${item.hora === 'DIA_INTEIRO' ? 'Dia Fechado' : item.hora}</span><br>
-                        ${acoes}</div>`;
+                        <div>
+                            <strong>${item.nome}</strong> <br>
+                            <span style="font-size:14px; color:#555;">📅 Data: ${item.data.split('-').reverse().join('/')} às ⏰ ${exibicaoHora}</span>
+                        </div>
+                        <div>
+                            <span style="font-weight:bold; font-size:12px; padding:4px 8px; border-radius:12px; background:#e2e8f0; display:inline-block; float:right;">${item.status}</span>
+                            <br>${btnAcoes}
+                        </div>
+                    </div>`;
                 });
+            }).catch(() => {
+                document.getElementById('listaAgendamentos').innerHTML = "<p style='color:red; font-weight:bold;'>Erro ao conectar com a planilha. Verifique a URL do Script.</p>";
             });
         }
 
-        // ENVIO CORRIGIDO (URLSearchParams)
-        function dispararAcao(pacoteObj) {
+        function mudarStatus(id, status) {
             const params = new URLSearchParams();
-            for (let chave in pacoteObj) params.append(chave, pacoteObj[chave]);
+            params.append('acao', 'atualizar_status');
+            params.append('id', id);
+            params.append('status', status);
             
             fetch(URL_API, { method: 'POST', mode: 'no-cors', body: params }).then(() => {
-                alert("Salvo com sucesso!");
+                alert("Status modificado com sucesso!");
                 setTimeout(carregarDadosGerais, 1000);
             });
         }
@@ -162,7 +220,9 @@
             for (let dia = 1; dia <= diasNoMes; dia++) {
                 let div = document.createElement('div'); div.className = 'dia'; div.innerText = dia;
                 div.onclick = () => {
-                    document.getElementById('dataBlockISO').value = new Date(ano, mes, dia).toISOString().substring(0, 10);
+                    let mStr = String(mes + 1).padStart(2, '0');
+                    let dStr = String(dia).padStart(2, '0');
+                    document.getElementById('dataBlockISO').value = `${ano}-${mStr}-${dStr}`;
                     document.getElementById('dataBlockStr').innerText = `${dia}/${mes+1}/${ano}`;
                     document.getElementById('modalBloqueio').style.display = 'flex';
                 };
@@ -173,11 +233,20 @@
         function salvarBloqueio() {
             const d = document.getElementById('dataBlockISO').value;
             const h = document.getElementById('horaBlock').value;
-            dispararAcao({ acao: "criar", data: d, hora: h, nome: "🔒 BLOQUEIO DA MIKAELY", status: 'Bloqueado' });
-            document.getElementById('modalBloqueio').style.display = 'none';
-        }
+            
+            const params = new URLSearchParams();
+            params.append('acao', 'criar');
+            params.append('data', d);
+            params.append('hora', h);
+            params.append('nome', '🔒 AGENDA TRAVADA (Mikaely)');
+            params.append('status', 'Bloqueado');
 
-        montarCalendarioAdmin();
+            fetch(URL_API, { method: 'POST', mode: 'no-cors', body: params }).then(() => {
+                alert("Horário bloqueado com sucesso na base de dados!");
+                document.getElementById('modalBloqueio').style.display = 'none';
+                setTimeout(carregarDadosGerais, 1000);
+            });
+        }
     </script>
 </body>
 </html>
