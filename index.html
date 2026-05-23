@@ -3,87 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento - Mikaely Nails</title>
+    <title>Mikaely Nails</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fef1f6; color: #4a4a4a; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1); width: 100%; max-width: 450px; border-top: 5px solid #d81b60; }
-        h1 { color: #d81b60; text-align: center; margin-bottom: 5px; font-size: 26px; }
-        p.subtitle { text-align: center; color: #888; margin-bottom: 25px; font-size: 14px; }
-        .form-group { margin-bottom: 18px; }
-        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #666; }
-        input, select { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; background-color: #fafafa; transition: 0.3s; }
-        input:focus, select:focus { border-color: #d81b60; outline: none; background-color: #fff; box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1); }
-        button { background-color: #d81b60; color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; transition: 0.3s; }
-        button:hover { background-color: #ad144d; transform: translateY(-1px); }
+        body { font-family: 'Segoe UI', sans-serif; background: #fef1f6; color: #333; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1); width: 100%; max-width: 400px; border-top: 5px solid #d81b60; margin-bottom: 20px; }
+        h1 { color: #d81b60; text-align: center; margin-bottom: 5px; }
+        p.sub { text-align: center; color: #888; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
+        
+        /* Calendário */
+        .header-mes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; }
+        .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #888; margin-bottom: 5px; }
+        .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .dia { padding: 10px 0; text-align: center; background: #fafafa; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid #eee; }
+        .dia:hover { background: #fce4ec; border-color: #d81b60; color: #d81b60; font-weight: bold; }
+        .dia.vazio { background: transparent; border: none; cursor: default; }
+        
+        /* Modal */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: none; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; }
+        .modal { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; }
+        .modal h3 { margin-top: 0; color: #d81b60; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ddd; border-radius: 8px; box-sizing: border-box; }
+        button { background: #d81b60; color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
+        button.cancelar { background: #eee; color: #333; }
+        
+        /* Card Sucesso */
+        #cardSucesso { display: none; text-align: center; }
+        .btn-whatsapp { background: #25D366; }
     </style>
 </head>
 <body>
 
-    <div class="card">
+    <div class="card" id="telaCalendario">
         <h1>Mikaely Nails 💅</h1>
-        <p class="subtitle">Escolha seu melhor momento e agende sua sessão</p>
+        <p class="sub">Selecione o dia desejado na agenda</p>
         
-        <div class="form-group">
-            <label for="nome">Seu Nome Completo:</label>
-            <input type="text" id="nome" placeholder="Ex: Ana Clara Souza">
+        <div class="header-mes">
+            <span id="mesAtualStr"></span>
         </div>
-        <div class="form-group">
-            <label for="data">Selecione o Dia:</label>
-            <input type="date" id="data">
+        <div class="dias-semana">
+            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
         </div>
-        <div class="form-group">
-            <label for="hora">Selecione o Horário:</label>
-            <select id="hora">
-                <option value="">Clique para ver as opções...</option>
+        <div class="grid-calendario" id="gridDias"></div>
+    </div>
+
+    <div class="card" id="cardSucesso">
+        <h2 style="color: #25D366;">✅ Horário Reservado!</h2>
+        <p>Seu pedido foi enviado para a Mikaely.</p>
+        <div style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left;">
+            <strong>Nome:</strong> <span id="resNome"></span><br>
+            <strong>Data:</strong> <span id="resData"></span><br>
+            <strong>Hora:</strong> <span id="resHora"></span>
+        </div>
+        <button class="btn-whatsapp" onclick="enviarWhats()">📱 Confirmar via WhatsApp</button>
+        <button class="cancelar" onclick="voltarInicio()">Voltar ao Início</button>
+    </div>
+
+    <div class="modal-overlay" id="modalAgendamento">
+        <div class="modal">
+            <h3>Agendar para <span id="dataSelecionadaStr"></span></h3>
+            <input type="hidden" id="dataEscolhidaISO">
+            
+            <label>Horário:</label>
+            <select id="horaEscolhida">
                 <option value="09:00">09:00</option>
                 <option value="10:30">10:30</option>
                 <option value="13:30">13:30</option>
                 <option value="15:00">15:00</option>
                 <option value="16:30">16:30</option>
             </select>
+            
+            <label>Nome Completo:</label>
+            <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
+            
+            <label>WhatsApp (com DDD):</label>
+            <input type="tel" id="whatsCliente" placeholder="Ex: 11999999999">
+            
+            <button id="btnConfirmar" onclick="salvarAgendamento()">Confirmar Agendamento</button>
+            <button class="cancelar" onclick="fecharModal()">Cancelar</button>
         </div>
-        <button id="btnConfirmar" onclick="enviarAgendamento()">Confirmar Meu Horário</button>
     </div>
 
     <script>
-    const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
+        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; // <-- COLOQUE SUA NOVA URL AQUI
+        let mesAtual = new Date();
 
-    function enviarAgendamento() {
-        const nome = document.getElementById('nome').value;
-        const data = document.getElementById('data').value;
-        const hora = document.getElementById('hora').value;
-        const btn = document.getElementById('btnConfirmar');
-        
-        if(!nome || !data || !hora) {
-            alert("Por favor, preencha todos os campos do agendamento.");
-            return;
+        function montarCalendario() {
+            const grid = document.getElementById('gridDias');
+            grid.innerHTML = '';
+            
+            const ano = mesAtual.getFullYear();
+            const mes = mesAtual.getMonth();
+            document.getElementById('mesAtualStr').innerText = mesAtual.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+            
+            const primeiroDiaMes = new Date(ano, mes, 1).getDay();
+            const diasNoMes = new Date(ano, mes + 1, 0).getDate();
+            
+            for (let i = 0; i < primeiroDiaMes; i++) {
+                grid.innerHTML += `<div class="dia vazio"></div>`;
+            }
+            
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                let div = document.createElement('div');
+                div.className = 'dia';
+                div.innerText = dia;
+                div.onclick = () => abrirModal(ano, mes, dia);
+                grid.appendChild(div);
+            }
         }
 
-        btn.innerText = "Salvando...";
-        btn.disabled = true;
+        function abrirModal(ano, mes, dia) {
+            let dataFormatada = new Date(ano, mes, dia).toISOString().substring(0, 10);
+            document.getElementById('dataEscolhidaISO').value = dataFormatada;
+            document.getElementById('dataSelecionadaStr').innerText = `${dia}/${mes+1}/${ano}`;
+            document.getElementById('modalAgendamento').style.display = 'flex';
+        }
 
-        const pacote = { acao: "criar", data: data, hora: hora, nome: nome, status: 'Agendado' };
+        function fecharModal() {
+            document.getElementById('modalAgendamento').style.display = 'none';
+        }
 
-        // Remoção do no-cors. Enviamos apenas o body puro para o Google aceitar 100%
-        fetch(URL_API, {
-            method: 'POST',
-            body: JSON.stringify(pacote)
-        })
-        .then(resposta => resposta.json())
-        .then(resultado => {
-            alert("Perfeito! Seu horário foi reservado com a Mikaely.");
-            document.getElementById('nome').value = "";
-            document.getElementById('data').value = "";
-            document.getElementById('hora').value = "";
-            btn.innerText = "Confirmar Meu Horário";
-            btn.disabled = false;
-        })
-        .catch(erro => {
-            alert("Erro de conexão. Tente novamente.");
-            btn.innerText = "Confirmar Meu Horário";
-            btn.disabled = false;
-        });
-    }
-</script>
+        function salvarAgendamento() {
+            const data = document.getElementById('dataEscolhidaISO').value;
+            const hora = document.getElementById('horaEscolhida').value;
+            const nome = document.getElementById('nomeCliente').value;
+            const whats = document.getElementById('whatsCliente').value;
+            const btn = document.getElementById('btnConfirmar');
+
+            if(!nome || !whats) return alert("Preencha seu nome e número de WhatsApp!");
+
+            btn.innerText = "Enviando...";
+            btn.disabled = true;
+
+            const pacote = { acao: "criar", data: data, hora: hora, nome: nome, whatsapp: whats, status: 'Agendado' };
+
+            fetch(URL_API, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'text/plain' },
+                body: JSON.stringify(pacote)
+            }).then(() => {
+                // Prepara a tela de sucesso
+                document.getElementById('resNome').innerText = nome;
+                document.getElementById('resData').innerText = data.split('-').reverse().join('/');
+                document.getElementById('resHora').innerText = hora;
+                
+                fecharModal();
+                document.getElementById('telaCalendario').style.display = 'none';
+                document.getElementById('cardSucesso').style.display = 'block';
+                
+                btn.innerText = "Confirmar Agendamento";
+                btn.disabled = false;
+            });
+        }
+
+        function enviarWhats() {
+            const nome = document.getElementById('resNome').innerText;
+            const data = document.getElementById('resData').innerText;
+            const hora = document.getElementById('resHora').innerText;
+            const texto = `Olá! Sou ${nome}. Acabei de solicitar um agendamento no site para o dia ${data} às ${hora}. Gostaria de confirmar!`;
+            
+            // Redireciona para o WhatsApp da cliente
+            const link = `https://wa.me/?text=${encodeURIComponent(texto)}`;
+            window.open(link, '_blank');
+        }
+
+        function voltarInicio() {
+            document.getElementById('telaCalendario').style.display = 'block';
+            document.getElementById('cardSucesso').style.display = 'none';
+            document.getElementById('nomeCliente').value = '';
+            document.getElementById('whatsCliente').value = '';
+        }
+
+        montarCalendario();
+    </script>
 </body>
 </html>
