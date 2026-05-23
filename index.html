@@ -46,43 +46,44 @@
     </div>
 
     <script>
-        // URL que você gerou no Apps Script inserida aqui:
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
+    const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
 
-        function enviarAgendamento() {
-            const nome = document.getElementById('nome').value;
-            const data = document.getElementById('data').value;
-            const hora = document.getElementById('hora').value;
-            const btn = document.getElementById('btnConfirmar');
-            
-            if(!nome || !data || !hora) {
-                alert("Por favor, preencha todos os campos do agendamento.");
-                return;
-            }
-
-            btn.innerText = "Salvando...";
-            btn.disabled = true;
-
-            const pacote = { acao: "criar", data: data, hora: hora, nome: nome, status: 'Agendado' };
-
-            fetch(URL_API, {
-                method: 'POST',
-                mode: 'no-cors', // ISSO RESOLVE O ERRO DE COMUNICAÇÃO
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify(pacote)
-            }).then(() => {
-                alert("Perfeito! Seu horário foi reservado com a Mikaely.");
-                document.getElementById('nome').value = "";
-                document.getElementById('data').value = "";
-                document.getElementById('hora').value = "";
-                btn.innerText = "Confirmar Meu Horário";
-                btn.disabled = false;
-            }).catch(erro => {
-                alert("Erro de comunicação com a planilha.");
-                btn.innerText = "Confirmar Meu Horário";
-                btn.disabled = false;
-            });
+    function enviarAgendamento() {
+        const nome = document.getElementById('nome').value;
+        const data = document.getElementById('data').value;
+        const hora = document.getElementById('hora').value;
+        const btn = document.getElementById('btnConfirmar');
+        
+        if(!nome || !data || !hora) {
+            alert("Por favor, preencha todos os campos do agendamento.");
+            return;
         }
-    </script>
+
+        btn.innerText = "Salvando...";
+        btn.disabled = true;
+
+        const pacote = { acao: "criar", data: data, hora: hora, nome: nome, status: 'Agendado' };
+
+        // Remoção do no-cors. Enviamos apenas o body puro para o Google aceitar 100%
+        fetch(URL_API, {
+            method: 'POST',
+            body: JSON.stringify(pacote)
+        })
+        .then(resposta => resposta.json())
+        .then(resultado => {
+            alert("Perfeito! Seu horário foi reservado com a Mikaely.");
+            document.getElementById('nome').value = "";
+            document.getElementById('data').value = "";
+            document.getElementById('hora').value = "";
+            btn.innerText = "Confirmar Meu Horário";
+            btn.disabled = false;
+        })
+        .catch(erro => {
+            alert("Erro de conexão. Tente novamente.");
+            btn.innerText = "Confirmar Meu Horário";
+            btn.disabled = false;
+        });
+    }
+</script>
 </body>
 </html>
