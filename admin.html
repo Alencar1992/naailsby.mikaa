@@ -3,37 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamentos Mikaa Nail Designer</title>
+    <title>Painel Mikaely</title>
     <style>
-        :root { --primary: #1e3a8a; --bg: #f8fafc; --text: #334155; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; min-height: 100vh; }
-        .sidebar { width: 260px; background: #0f172a; color: white; padding: 25px 15px; }
-        .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: 500; font-size: 15px; }
-        .menu-btn:hover, .menu-btn.active { background: #1e293b; color: white; }
-        .main-content { flex-grow: 1; padding: 40px; position: relative; }
+        :root { --primary: #1e3a8a; --bg: rgba(248, 250, 252, 0.9); }
+        body { 
+            font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; min-height: 100vh;
+            background: url('https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&q=80') no-repeat center center fixed;
+            background-size: cover;
+        }
+        .sidebar { width: 260px; background: rgba(15, 23, 42, 0.95); color: white; padding: 25px 15px; }
+        .menu-btn { width: 100%; background: none; border: none; color: #94a3b8; padding: 12px 15px; text-align: left; cursor: pointer; border-radius: 8px; margin-bottom: 8px; font-weight: bold; font-size: 15px; }
+        .menu-btn.active { background: #1e293b; color: white; }
+        .main-content { flex-grow: 1; padding: 40px; position: relative; background: var(--bg); }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 15px; border-left: 5px solid #e2e8f0; }
+        
+        /* O Card Redondo Restaurado */
+        .badge-total { position: absolute; top: 30px; right: 40px; background: linear-gradient(135deg, #d81b60, #ad144d); color: white; width: 90px; height: 90px; border-radius: 50%; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; box-shadow: 0 10px 15px rgba(0,0,0,0.2); }
+        .badge-total span { font-size: 26px; }
+        .badge-total small { font-size: 11px; opacity: 0.9; }
+
+        .card-appointment { background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); margin-bottom: 15px; border-left: 5px solid #e2e8f0; }
         .card-appointment.Agendado { border-left-color: #3b82f6; }
-        .card-appointment.Concluído { border-left-color: #10b981; }
-        .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; margin-top:10px; font-size: 13px; }
-        .btn-success { background: #dcfce7; color: #15803d; }
-        .btn-danger { background: #fee2e2; color: #b91c1c; }
-        .btn-whats { background: #d1fae5; color: #047857; }
+        .actions button { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; margin-right: 5px; margin-top:10px; }
+        .btn-success { background: #dcfce7; color: #15803d; } .btn-danger { background: #fee2e2; color: #b91c1c; } .btn-whats { background: #d1fae5; color: #047857; }
+        
         .login-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: #0f172a; display: flex; justify-content: center; align-items: center; z-index: 9999; }
         .login-box { background: white; padding: 40px; border-radius: 16px; text-align: center; width: 300px; }
         .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border-radius: 8px; border: 1px solid #ccc; }
         .login-box button { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; }
+
+        /* Calendário Admin */
+        .calendario-box { background: white; padding: 20px; border-radius: 12px; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 12px; color: #888; margin-bottom: 5px; }
+        .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+        .dia { padding: 10px 0; text-align: center; background: #f8fafc; border-radius: 8px; cursor: pointer; border: 1px solid #e2e8f0; }
+        .dia:hover { background: #fee2e2; border-color: #ef4444; color: #ef4444; font-weight: bold; }
+        .dia.vazio { background: transparent; border: none; }
+        
+        .modal-admin { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; padding: 20px; border-radius: 12px; width: 300px; }
+        .modal-content select, .modal-content button { width: 100%; padding: 10px; margin-top: 10px; border-radius: 6px; }
     </style>
 </head>
 <body>
 
     <div id="loginModal" class="login-overlay">
-        <div class="login-box">
-            <h2 style="color:#1e3a8a;">Acesso Restrito</h2>
-            <input type="password" id="inputSenha" placeholder="Senha da Mikaely">
-            <button onclick="autenticar()">Entrar no Painel</button>
-        </div>
+        <div class="login-box"><h2 style="color:#1e3a8a;">Acesso Restrito</h2><input type="password" id="inputSenha" placeholder="Senha da Mikaely"><button onclick="autenticar()">Entrar no Painel</button></div>
     </div>
 
     <div class="sidebar">
@@ -43,6 +59,8 @@
     </div>
 
     <div class="main-content">
+        <div class="badge-total"><span id="qtdHoje">0</span><small>Hoje</small></div>
+
         <div id="dashboard" class="tab-content active">
             <h2>Painel de Atendimentos</h2>
             <button onclick="carregarDadosGerais()" style="padding: 10px; border-radius: 6px; background:#e2e8f0; border:none; cursor:pointer; margin-bottom: 20px;">🔄 Atualizar Lista</button>
@@ -50,92 +68,112 @@
         </div>
 
         <div id="config" class="tab-content">
-            <h2>Travar Horários</h2>
-            <div style="background:white; padding: 20px; border-radius: 12px; max-width: 400px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-                <label style="font-weight:bold;">Selecione a Data:</label>
-                <input type="date" id="blockData" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-                
-                <label style="font-weight:bold;">Selecione o Horário:</label>
-                <select id="blockHora" style="width:100%; padding:10px; margin-top:5px; margin-bottom:15px; border:1px solid #ccc; border-radius:6px; box-sizing:border-box;">
-                    <option value="DIA_INTEIRO">Bloquear o Dia Inteiro</option>
-                    <option value="09:00">09:00</option>
-                    <option value="10:30">10:30</option>
-                    <option value="13:30">13:30</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:30">16:30</option>
-                </select>
-                
-                <button onclick="salvarBloqueio()" style="width:100%; background:#ef4444; color:white; padding:12px; border:none; border-radius:6px; cursor:pointer; font-weight:bold;">Travar Agenda</button>
+            <h2>Bloquear Datas e Horários</h2>
+            <p>Clique no dia do calendário abaixo para travar um horário:</p>
+            <div class="calendario-box">
+                <div style="text-align: center; font-weight: bold; margin-bottom: 10px;" id="mesAdminStr"></div>
+                <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
+                <div class="grid-calendario" id="gridDiasAdmin"></div>
             </div>
         </div>
     </div>
 
+    <div class="modal-admin" id="modalBloqueio">
+        <div class="modal-content">
+            <h3 style="margin-top:0; color:#ef4444;">Travar: <span id="dataBlockStr"></span></h3>
+            <input type="hidden" id="dataBlockISO">
+            <label>Qual horário deseja bloquear?</label>
+            <select id="horaBlock">
+                <option value="DIA_INTEIRO">Bloquear o Dia Todo</option>
+                <option value="09:00">09:00</option><option value="10:30">10:30</option>
+                <option value="13:30">13:30</option><option value="15:00">15:00</option>
+                <option value="16:30">16:30</option>
+            </select>
+            <button onclick="salvarBloqueio()" style="background:#ef4444; color:white; border:none; font-weight:bold;">Confirmar Bloqueio</button>
+            <button onclick="document.getElementById('modalBloqueio').style.display='none'" style="background:#eee; border:none;">Cancelar</button>
+        </div>
+    </div>
+
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; // <-- COLOQUE SUA NOVA URL AQUI
+        const URL_API = "https://script.google.com/macros/s/AKfycbwI36hPvhQLC74viNy-FkgyrDOy-eVhAPbYbaslW-gKyJmeQyV0f3kS8OSEZygoGUUC/exec"; 
         
         function autenticar() {
             if (document.getElementById('inputSenha').value === "mika123") {
-                document.getElementById('loginModal').style.display = 'none';
-                carregarDadosGerais();
+                document.getElementById('loginModal').style.display = 'none'; carregarDadosGerais();
             } else alert("Senha Incorreta!");
         }
 
         function trocarAba(idAba, botao) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
             document.querySelectorAll('.menu-btn').forEach(el => el.classList.remove('active'));
-            document.getElementById(idAba).classList.add('active');
-            botao.classList.add('active');
+            document.getElementById(idAba).classList.add('active'); botao.classList.add('active');
         }
 
         function carregarDadosGerais() {
             document.getElementById('listaAgendamentos').innerHTML = "Buscando dados...";
-            fetch(URL_API + "?nocache=" + new Date().getTime())
-                .then(res => res.json())
-                .then(dados => {
-                    const container = document.getElementById('listaAgendamentos');
-                    container.innerHTML = "";
-                    
-                    const dadosInvertidos = dados.reverse(); // Mostra os mais recentes primeiro
-                    
-                    dadosInvertidos.forEach(item => {
-                        let acoes = '';
-                        if (item.status === 'Agendado') {
-                            acoes = `
-                                <div class="actions">
-                                    <button class="btn-success" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Concluído'})">Marcar Concluído</button>
+            fetch(URL_API + "?nocache=" + new Date().getTime()).then(res => res.json()).then(dados => {
+                const container = document.getElementById('listaAgendamentos'); container.innerHTML = "";
+                
+                // Cálculo do Card Redondo
+                const hojeIso = new Date().toISOString().substring(0,10);
+                document.getElementById('qtdHoje').innerText = dados.filter(i => i.data.substring(0,10) === hojeIso && i.status === 'Agendado').length;
+
+                dados.reverse().forEach(item => {
+                    let acoes = '';
+                    if (item.status === 'Agendado') {
+                        acoes = `<div class="actions">
+                                    <button class="btn-success" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Concluído'})">Concluir</button>
                                     <button class="btn-danger" onclick="dispararAcao({acao:'atualizar_status', id:'${item.id}', status:'Cancelado'})">Cancelar</button>
-                                    ${item.whatsapp ? `<a href="https://wa.me/55${item.whatsapp.replace(/\D/g, '')}" target="_blank"><button class="btn-whats">Chamar no WhatsApp</button></a>` : ''}
-                                </div>
-                            `;
-                        }
-                        
-                        container.innerHTML += `
-                            <div class="card-appointment ${item.status}">
-                                <strong>${item.nome}</strong> 
-                                <span style="float:right; font-weight:bold; font-size:12px;">${item.status}</span><br>
-                                <span style="font-size:14px; color:#64748b;">📅 ${item.data.substring(0,10)} às ⏰ ${item.hora === 'DIA_INTEIRO' ? 'Dia Inteiro Fechado' : item.hora}</span><br>
-                                ${item.whatsapp ? `<span style="font-size:13px; color:#10b981;">📱 ${item.whatsapp}</span>` : ''}
-                                ${acoes}
-                            </div>
-                        `;
-                    });
+                                    ${item.whatsapp ? `<a href="https://wa.me/55${item.whatsapp.replace(/\D/g, '')}" target="_blank"><button class="btn-whats">WhatsApp</button></a>` : ''}
+                                 </div>`;
+                    }
+                    container.innerHTML += `<div class="card-appointment ${item.status}">
+                        <strong>${item.nome}</strong> <span style="float:right; font-weight:bold; font-size:12px;">${item.status}</span><br>
+                        <span style="font-size:14px; color:#64748b;">📅 ${item.data.substring(0,10)} às ⏰ ${item.hora === 'DIA_INTEIRO' ? 'Dia Fechado' : item.hora}</span><br>
+                        ${acoes}</div>`;
                 });
+            });
         }
 
-        function dispararAcao(pacote) {
-            fetch(URL_API, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify(pacote) })
-                .then(() => {
-                    alert("Ação realizada com sucesso!");
-                    setTimeout(carregarDadosGerais, 1000); // Recarrega a tela logo após enviar
-                });
+        // ENVIO CORRIGIDO (URLSearchParams)
+        function dispararAcao(pacoteObj) {
+            const params = new URLSearchParams();
+            for (let chave in pacoteObj) params.append(chave, pacoteObj[chave]);
+            
+            fetch(URL_API, { method: 'POST', mode: 'no-cors', body: params }).then(() => {
+                alert("Salvo com sucesso!");
+                setTimeout(carregarDadosGerais, 1000);
+            });
+        }
+
+        function montarCalendarioAdmin() {
+            const grid = document.getElementById('gridDiasAdmin'); grid.innerHTML = '';
+            let hoje = new Date(); let ano = hoje.getFullYear(); let mes = hoje.getMonth();
+            document.getElementById('mesAdminStr').innerText = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+            
+            let primeiroDiaMes = new Date(ano, mes, 1).getDay();
+            let diasNoMes = new Date(ano, mes + 1, 0).getDate();
+            
+            for (let i = 0; i < primeiroDiaMes; i++) grid.innerHTML += `<div class="dia vazio"></div>`;
+            for (let dia = 1; dia <= diasNoMes; dia++) {
+                let div = document.createElement('div'); div.className = 'dia'; div.innerText = dia;
+                div.onclick = () => {
+                    document.getElementById('dataBlockISO').value = new Date(ano, mes, dia).toISOString().substring(0, 10);
+                    document.getElementById('dataBlockStr').innerText = `${dia}/${mes+1}/${ano}`;
+                    document.getElementById('modalBloqueio').style.display = 'flex';
+                };
+                grid.appendChild(div);
+            }
         }
 
         function salvarBloqueio() {
-            const data = document.getElementById('blockData').value;
-            const hora = document.getElementById('blockHora').value;
-            if(!data) return alert("Selecione uma data!");
-            dispararAcao({ acao: "criar", data: data, hora: hora, nome: "🔒 BLOQUEIO DA MIKAELY", status: 'Bloqueado' });
+            const d = document.getElementById('dataBlockISO').value;
+            const h = document.getElementById('horaBlock').value;
+            dispararAcao({ acao: "criar", data: d, hora: h, nome: "🔒 BLOQUEIO DA MIKAELY", status: 'Bloqueado' });
+            document.getElementById('modalBloqueio').style.display = 'none';
         }
+
+        montarCalendarioAdmin();
     </script>
 </body>
 </html>
