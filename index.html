@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agendamento - Mikaa Nail Designer</title>
+    <title>Agendamento - Mikaely Nails</title>
     <style>
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fef1f6; color: #4a4a4a; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1); width: 100%; max-width: 450px; border-top: 5px solid #d81b60; }
@@ -20,7 +20,7 @@
 <body>
 
     <div class="card">
-        <h1>Mikaa Nail Designer 💅</h1>
+        <h1>Mikaely Nails 💅</h1>
         <p class="subtitle">Escolha seu melhor momento e agende sua sessão</p>
         
         <div class="form-group">
@@ -42,28 +42,32 @@
                 <option value="16:30">16:30</option>
             </select>
         </div>
-        <button onclick="enviarAgendamento()">Confirmar Meu Horário</button>
+        <button id="btnConfirmar" onclick="enviarAgendamento()">Confirmar Meu Horário</button>
     </div>
 
     <script>
-        // Substitua pela sua nova URL gerada pelo deploy do Apps Script
-        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec"; 
+        // URL que você gerou no Apps Script inserida aqui:
+        const URL_API = "https://script.google.com/macros/s/AKfycby7b8SfU_EuqlQXJh6Txba5ZjndtKJHdN_KRvtaBNA2gs9-3kZMNTdNA8rRIF0wNmdn/exec";
 
         function enviarAgendamento() {
             const nome = document.getElementById('nome').value;
             const data = document.getElementById('data').value;
             const hora = document.getElementById('hora').value;
+            const btn = document.getElementById('btnConfirmar');
             
             if(!nome || !data || !hora) {
                 alert("Por favor, preencha todos os campos do agendamento.");
                 return;
             }
 
+            btn.innerText = "Salvando...";
+            btn.disabled = true;
+
             const pacote = { acao: "criar", data: data, hora: hora, nome: nome, status: 'Agendado' };
 
-            // Usando Content-Type text/plain para quebrar a restrição de CORS e salvar com sucesso
             fetch(URL_API, {
                 method: 'POST',
+                mode: 'no-cors', // ISSO RESOLVE O ERRO DE COMUNICAÇÃO
                 headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(pacote)
             }).then(() => {
@@ -71,8 +75,12 @@
                 document.getElementById('nome').value = "";
                 document.getElementById('data').value = "";
                 document.getElementById('hora').value = "";
+                btn.innerText = "Confirmar Meu Horário";
+                btn.disabled = false;
             }).catch(erro => {
-                alert("Erro ao salvar. Verifique se inseriu a URL correta do script.");
+                alert("Erro de comunicação com a planilha.");
+                btn.innerText = "Confirmar Meu Horário";
+                btn.disabled = false;
             });
         }
     </script>
