@@ -3,74 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agenda Mikaely - Manicure</title>
+    <title>Agendamento - Mikaa Nail Designer</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #fdf0f5; color: #333; margin: 0; padding: 20px; }
-        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        h1, h2 { text-align: center; color: #d81b60; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input, select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-        button { background-color: #d81b60; color: white; border: none; padding: 12px 15px; border-radius: 5px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; }
-        button:hover { background-color: #ad144d; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #fef1f6; color: #4a4a4a; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .card { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 8px 24px rgba(216, 27, 96, 0.1); width: 100%; max-width: 450px; border-top: 5px solid #d81b60; }
+        h1 { color: #d81b60; text-align: center; margin-bottom: 5px; font-size: 26px; }
+        p.subtitle { text-align: center; color: #888; margin-bottom: 25px; font-size: 14px; }
+        .form-group { margin-bottom: 18px; }
+        label { display: block; margin-bottom: 6px; font-weight: 600; font-size: 14px; color: #666; }
+        input, select { width: 100%; padding: 12px; border: 1px solid #e0e0e0; border-radius: 8px; box-sizing: border-box; font-size: 15px; background-color: #fafafa; transition: 0.3s; }
+        input:focus, select:focus { border-color: #d81b60; outline: none; background-color: #fff; box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1); }
+        button { background-color: #d81b60; color: white; border: none; padding: 14px; border-radius: 8px; cursor: pointer; font-weight: bold; width: 100%; font-size: 16px; margin-top: 10px; transition: 0.3s; }
+        button:hover { background-color: #ad144d; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <h1>Mikaa Nail Designer💅</h1>
-        <h2>Agende seu Horário</h2>
+    <div class="card">
+        <h1>Mikaa Nail Designer 💅</h1>
+        <p class="subtitle">Escolha seu melhor momento e agende sua sessão</p>
         
         <div class="form-group">
-            <label for="nomeCliente">Seu Nome:</label>
-            <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
+            <label for="nome">Seu Nome Completo:</label>
+            <input type="text" id="nome" placeholder="Ex: Ana Clara Souza">
         </div>
         <div class="form-group">
-            <label for="dataCliente">Escolha o Dia:</label>
-            <input type="date" id="dataCliente">
+            <label for="data">Selecione o Dia:</label>
+            <input type="date" id="data">
         </div>
         <div class="form-group">
-            <label for="horaCliente">Escolha o Horário:</label>
-            <select id="horaCliente">
-                <option value="">Selecione um horário...</option>
+            <label for="hora">Selecione o Horário:</label>
+            <select id="hora">
+                <option value="">Clique para ver as opções...</option>
                 <option value="09:00">09:00</option>
-                <option value="10:00">10:00</option>
-                <option value="11:00">11:00</option>
-                <option value="14:00">14:00</option>
+                <option value="10:30">10:30</option>
+                <option value="13:30">13:30</option>
                 <option value="15:00">15:00</option>
-                <option value="16:00">16:00</option>
+                <option value="16:30">16:30</option>
             </select>
         </div>
-        <button onclick="salvarAgendamento()">Confirmar Agendamento</button>
+        <button onclick="enviarAgendamento()">Confirmar Meu Horário</button>
     </div>
 
     <script>
-        const URL_BACKEND = "https://script.google.com/macros/s/AKfycbxxz7eyJ3ZNjQbzI3r5DEyZnDisW007duscF-1H6js1oQmj71sHiNCZ26CiIhm1xmw/exec"; 
+        // Substitua pela sua nova URL gerada pelo deploy do Apps Script
+        const URL_API = "https://script.google.com/macros/s/AKfycbxxz7eyJ3ZNjQbzI3r5DEyZnDisW007duscF-1H6js1oQmj71sHiNCZ26CiIhm1xmw/exec"; 
 
-        function salvarAgendamento() {
-            const nome = document.getElementById('nomeCliente').value;
-            const data = document.getElementById('dataCliente').value;
-            const hora = document.getElementById('horaCliente').value;
+        function enviarAgendamento() {
+            const nome = document.getElementById('nome').value;
+            const data = document.getElementById('data').value;
+            const hora = document.getElementById('hora').value;
             
             if(!nome || !data || !hora) {
-                alert("Por favor, preencha todos os campos!");
+                alert("Por favor, preencha todos os campos do agendamento.");
                 return;
             }
 
-            const pacote = { data: data, hora: hora, nome: nome, status: 'Agendado' };
+            const pacote = { acao: "criar", data: data, hora: hora, nome: nome, status: 'Agendado' };
 
-            fetch(URL_BACKEND, {
+            // Usando Content-Type text/plain para quebrar a restrição de CORS e salvar com sucesso
+            fetch(URL_API, {
                 method: 'POST',
-                mode: 'no-cors',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'text/plain' },
                 body: JSON.stringify(pacote)
             }).then(() => {
-                alert("Horário agendado com sucesso!");
-                document.getElementById('nomeCliente').value = "";
-                document.getElementById('dataCliente').value = "";
-                document.getElementById('horaCliente').value = "";
+                alert("Perfeito! Seu horário foi reservado com a Mikaely.");
+                document.getElementById('nome').value = "";
+                document.getElementById('data').value = "";
+                document.getElementById('hora').value = "";
             }).catch(erro => {
-                alert("Houve um erro de comunicação. Tente novamente.");
+                alert("Erro ao salvar. Verifique se inseriu a URL correta do script.");
             });
         }
     </script>
