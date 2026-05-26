@@ -6,7 +6,15 @@
     <title>Mikaely Admin Pro</title>
     <style>
         :root { --primary: #d81b60; --dark: #0f172a; --bg: #f8fafc; }
-        body { font-family: 'Segoe UI', sans-serif; margin: 0; display: flex; min-height: 100vh; background: var(--bg); color: #333; }
+        body
+        { 
+    font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; 
+    display: flex; flex-direction: column; align-items: center; 
+    
+    /* Coloque o nome EXATO do arquivo com o .jpg ou .png no final */
+    background: url('logoapp.png') no-repeat center center fixed;
+    background-size: cover;
+}
         
         /* Layout e Menu Lateral */
         .sidebar { width: 260px; background: var(--dark); color: white; padding: 25px 15px; box-sizing: border-box; flex-shrink: 0; transition: 0.3s; }
