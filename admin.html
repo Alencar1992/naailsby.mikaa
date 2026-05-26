@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikaely Admin Pro</title>
+    <title>Mikaely Nails - FREE</title>
     <style>
         :root { --primary: #d81b60; --dark: #0f172a; --bg: #f8fafc; }
         body
         { 
-    font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; 
+    font-family: 'lucida handruriting', Comic Sans MS; margin: 0; padding: 20px; 
     display: flex; flex-direction: column; align-items: center; 
     
     /* Coloque o nome EXATO do arquivo com o .jpg ou .png no final */
@@ -62,12 +62,34 @@
             .actions { display: flex; width: 100%; }
             .actions button { flex-grow: 1; margin: 0 2px; }
         }
+
+        /* ESTILO DO RODAPÉ DEV ALENCAR */
+.footer-dev {
+    width: 100%;
+    text-align: center;
+    padding: 15px;
+    font-size: 12px;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.75); /* Fundo escuro transparente para dar leitura */
+    margin-top: auto; /* Empurra para o final da tela */
+    box-sizing: border-box;
+}
+.footer-dev a {
+    color: #38bdf8; /* Cor azul clara para destacar o link */
+    text-decoration: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.footer-dev a:hover {
+    color: #5234eb; /* Fica Roxo ao passar o mouse */
+    text-decoration: underline;
+}
     </style>
 </head>
 <body>
 
     <div class="sidebar">
-        <h2>Mikaely Gestão</h2>
+        <h2>Mikaely Nails</h2>
         <button class="menu-btn active" onclick="trocarAba('dashboard', this)">📅 Agenda Realtime</button>
         <button class="menu-btn" onclick="trocarAba('servicos', this)">💅 Serviços Disponíveis</button>
         <button class="menu-btn" onclick="trocarAba('configuracao', this)">⚙️ Config. Atendimento</button>
@@ -77,7 +99,7 @@
         <div id="dashboard" class="tab-content active">
             <h2>Gestão de Horários</h2>
             <div id="statusSincronizacao" style="font-size: 12px; color: #10b981; margin-bottom: 20px;">Sincronizado agora...</div>
-            <div id="listaAgendamentos">Carregando dados da planilha...</div>
+            <div id="listaAgendamentos">Carregando dados...</div>
         </div>
 
         <div id="servicos" class="tab-content">
@@ -124,6 +146,14 @@
     </div>
 
     <div id="toast">Operação realizada com sucesso!</div>
+
+    <div class="footer-dev" style="border-radius: 8px; margin-top: 30px;">
+            Since @2026 - <a href="https://wa.me/5511981071822" target="_blank">Dev Alencar</a> - Version 1.0 Free Build 26.05.26 - BD GoogleSheet
+        </div>
+        
+    </div> ```
+
+Feito isso, seu nome ficará perfeitamente visível na parte inferior. Quando clicarem em "Dev Alencar", o WhatsApp abrirá automaticamente uma conversa com o número `11981071822`!
 
     <script>
         const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // << INSIRA SUA URL DO PASSO 1
@@ -324,5 +354,6 @@
             });
         }
     </script>
+    
 </body>
 </html>
