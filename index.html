@@ -3,42 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mikaely Nails</title>
+    <title>Mikaely Nails - Agendamento</title>
     <style>
+        :root { --primary: #d81b60; --dark: #ad144d; }
         body { 
-            font-family: 'Segoe UI', sans-serif; 
-            margin: 0; padding: 20px; 
+            font-family: 'Segoe UI', sans-serif; margin: 0; padding: 20px; 
             display: flex; flex-direction: column; align-items: center; 
-            background: url('logoapp.png') no-repeat center center fixed;
+            /* SEU FUNDO PRESERVADO */
+            background: url('logomika') no-repeat center center fixed;
             background-size: cover;
         }
-        .card { background: rgba(255, 255, 255, 0.96); padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 400px; border-top: 5px solid #d81b60; margin-bottom: 20px; box-sizing: border-box; }
-        h1 { color: #d81b60; text-align: center; margin-bottom: 5px; }
+        
+        .card { background: rgba(255, 255, 255, 0.96); padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); width: 100%; max-width: 420px; border-top: 5px solid var(--primary); margin-bottom: 20px; box-sizing: border-box; }
+        h1 { color: var(--primary); text-align: center; margin-bottom: 5px; }
         p.sub { text-align: center; color: #555; margin-top: 0; margin-bottom: 20px; font-size: 14px; }
         
-        .header-mes { text-align: center; margin-bottom: 15px; font-weight: bold; color: #d81b60; font-size: 18px; }
+        /* CALENDÁRIO */
+        .header-mes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: var(--primary); font-size: 18px; text-transform: uppercase; }
         .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; color: #666; font-weight: bold; margin-bottom: 8px; }
         .grid-calendario { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
         .dia { padding: 12px 0; text-align: center; background: #fff; border-radius: 8px; cursor: pointer; transition: 0.2s; border: 1px solid #ddd; font-weight: 500; }
-        .dia:hover { background: #fce4ec; border-color: #d81b60; color: #d81b60; font-weight: bold; }
+        .dia:hover:not(.bloqueado) { background: #fce4ec; border-color: var(--primary); color: var(--primary); font-weight: bold; transform: scale(1.05); }
         .dia.vazio { background: transparent; border: none; cursor: default; }
         
-        /* Estilo do dia travado */
-        .dia.bloqueado { background: #fee2e2 !important; border-color: #fca5a5 !important; color: #ef4444 !important; cursor: not-allowed !important; font-weight: bold; }
+        /* DIAS BLOQUEADOS (Passado ou Inativo) */
+        .dia.bloqueado { background: #f1f5f9; border-color: #e2e8f0; color: #cbd5e1; cursor: not-allowed; text-decoration: line-through; }
         
-        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; padding: 20px; box-sizing: border-box; z-index: 1000; }
-        .modal { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 350px; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
-        .modal h3 { margin-top: 0; color: #d81b60; border-bottom: 1px solid #eee; padding-bottom: 10px; }
-        label { font-weight: 600; font-size: 14px; color: #555; display: block; margin-bottom: 5px; }
-        input, select { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; font-size: 15px; }
-        button { background: #d81b60; color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-bottom: 10px; }
-        button:hover { background: #ad144d; }
-        button.cancelar { background: #e2e8f0; color: #333; }
+        /* MODAL DE AGENDAMENTO */
+        .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; padding: 15px; box-sizing: border-box; z-index: 1000; }
+        .modal { background: white; padding: 25px; border-radius: 12px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.3); }
+        .modal h3 { margin-top: 0; color: var(--primary); border-bottom: 1px solid #eee; padding-bottom: 10px; }
+        label { font-weight: 600; font-size: 14px; color: #475569; display: block; margin-bottom: 5px; margin-top: 15px; }
+        input[type="text"], input[type="tel"], select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; box-sizing: border-box; font-size: 15px; background: #f8fafc; }
+        
+        /* LISTA DE SERVIÇOS */
+        .lista-servicos { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 10px; max-height: 150px; overflow-y: auto; }
+        .servico-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 14px; }
+        .servico-item input { margin-right: 10px; transform: scale(1.2); }
+        .resumo-valor { font-weight: bold; color: var(--primary); text-align: right; margin-top: 10px; font-size: 16px; }
+
+        button { background: var(--primary); color: white; border: none; padding: 14px; border-radius: 8px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 15px; transition: 0.2s; }
+        button:hover { background: var(--dark); }
+        button.cancelar { background: #e2e8f0; color: #475569; }
         button.cancelar:hover { background: #cbd5e1; }
         
         #cardSucesso { display: none; text-align: center; }
-        .btn-whatsapp { background: #25D366; }
-        .btn-whatsapp:hover { background: #1e7e34; }
+        .btn-whatsapp { background: #25D366; } .btn-whatsapp:hover { background: #1e7e34; }
     </style>
 </head>
 <body>
@@ -46,18 +56,23 @@
     <div class="card" id="telaCalendario">
         <h1>Mikaely Nails 💅</h1>
         <p class="sub">Selecione o dia desejado na agenda</p>
-        <div class="header-mes"><span id="mesAtualStr">Carregando agenda...</span></div>
+        <div class="header-mes">
+            <span onclick="mudarMes(-1)" style="cursor:pointer;">❮</span>
+            <span id="mesAtualStr">Carregando...</span>
+            <span onclick="mudarMes(1)" style="cursor:pointer;">❯</span>
+        </div>
         <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
         <div class="grid-calendario" id="gridDias"></div>
     </div>
 
     <div class="card" id="cardSucesso">
         <h2 style="color: #25D366;">✅ Horário Reservado!</h2>
-        <p>Seu pedido foi enviado para a planilha da Mikaely.</p>
-        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; border: 1px solid #e2e8f0;">
+        <p>Seu pedido foi recebido com sucesso.</p>
+        <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: left; border: 1px solid #e2e8f0; font-size: 15px;">
             <strong>Nome:</strong> <span id="resNome"></span><br>
             <strong>Data:</strong> <span id="resData"></span><br>
-            <strong>Hora:</strong> <span id="resHora"></span>
+            <strong>Hora:</strong> <span id="resHora"></span><br>
+            <strong style="color: #d81b60;">Total: R$ <span id="resTotal"></span></strong>
         </div>
         <button class="btn-whatsapp" onclick="enviarWhats()">📱 Confirmar via WhatsApp</button>
         <button class="cancelar" onclick="voltarInicio()">Voltar ao Início</button>
@@ -69,13 +84,19 @@
             <input type="hidden" id="dataEscolhidaISO">
             
             <label>Nome Completo:</label>
-            <input type="text" id="nomeCliente" placeholder="Seu nome aqui">
+            <input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
             
             <label>WhatsApp (com DDD):</label>
-            <input type="tel" id="whatsCliente" placeholder="Ex: 11999999999">
+            <input type="tel" id="whatsCliente" placeholder="Ex: 1199999-9999">
 
-            <label>Horário Disponível:</label>
-            <select id="horaEscolhida"></select>
+            <label>Escolha os Serviços:</label>
+            <div class="lista-servicos" id="boxServicos">
+                </div>
+            <div class="resumo-valor">Total Estimado: R$ <span id="valorCalculado">0.00</span></div>
+
+            <label>Horários Disponíveis:</label>
+            <select id="horaEscolhida">
+                </select>
             
             <button id="btnConfirmar" onclick="salvarAgendamento()">Confirmar Agendamento</button>
             <button class="cancelar" onclick="fecharModal()">Cancelar</button>
@@ -83,135 +104,233 @@
     </div>
 
     <script>
-        // COLOQUE A SUA NOVA URL GERADA NO PASSO 1 AQUI:
-        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; 
-        let agendamentosExistentes = [];
+        // ==========================================
+        // CONFIGURAÇÕES BASE
+        // ==========================================
+        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< SUA URL DO GOOGLE APPS SCRIPT AQUI
+        
+        let cache = { agendamentos: [], servicos: [], configuracoes: [] };
+        let mesVisao = new Date();
+        const diasSemanaNomes = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
-        function iniciarApp() {
+        // ==========================================
+        // SMART POLLING (TEMPO REAL)
+        // ==========================================
+        function buscarDados() {
             fetch(URL_API + "?nocache=" + new Date().getTime())
                 .then(res => res.json())
                 .then(dados => {
-                    agendamentosExistentes = dados;
-                    montarCalendario();
-                }).catch(() => {
-                    document.getElementById('mesAtualStr').innerText = "ERRO AO CARREGAR AGENDA";
-                });
+                    let mudou = JSON.stringify(cache) !== JSON.stringify(dados);
+                    cache = dados;
+                    // Só redesenha o calendário se o modal estiver fechado, para não atrapalhar o cliente
+                    if (mudou && document.getElementById('modalAgendamento').style.display !== 'flex') {
+                        montarCalendario();
+                    }
+                })
+                .catch(err => console.error("Erro no polling: ", err));
+        }
+
+        buscarDados();
+        setInterval(buscarDados, 5000); // Checa a cada 5 segundos
+
+        // ==========================================
+        // CALENDÁRIO COM BLOQUEIOS
+        // ==========================================
+        function mudarMes(direcao) {
+            mesVisao.setMonth(mesVisao.getMonth() + direcao);
+            montarCalendario();
         }
 
         function montarCalendario() {
             const grid = document.getElementById('gridDias');
             grid.innerHTML = '';
-            let hoje = new Date();
-            let ano = hoje.getFullYear(); let mes = hoje.getMonth();
             
-            document.getElementById('mesAtualStr').innerText = hoje.toLocaleString('pt-BR', { month: 'long', year: 'numeric' }).toUpperCase();
+            let ano = mesVisao.getFullYear(); 
+            let mes = mesVisao.getMonth();
+            document.getElementById('mesAtualStr').innerText = mesVisao.toLocaleString('pt-BR', { month: 'long', year: 'numeric' });
             
             let primeiroDiaMes = new Date(ano, mes, 1).getDay();
             let diasNoMes = new Date(ano, mes + 1, 0).getDate();
             
+            // Regra 2: Para bloquear datas passadas
+            let hoje = new Date();
+            hoje.setHours(0,0,0,0);
+            
             for (let i = 0; i < primeiroDiaMes; i++) grid.innerHTML += `<div class="dia vazio"></div>`;
             
             for (let dia = 1; dia <= diasNoMes; dia++) {
-                let diaFormatado = String(dia).padStart(2, '0');
-                let mesFormatado = String(mes + 1).padStart(2, '0');
-                let dataISO = `${ano}-${mesFormatado}-${diaFormatado}`;
-                
-                // Verifica se a Mikaely bloqueou o dia inteiro na planilha
-                let diaTodoBloqueado = agendamentosExistentes.some(item => item.data === dataISO && item.hora === 'DIA_INTEIRO' && item.status === 'Bloqueado');
+                let dataIteracao = new Date(ano, mes, dia);
+                let diaSemanaNome = diasSemanaNomes[dataIteracao.getDay()];
+                let dataISO = `${ano}-${String(mes + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
                 
                 let div = document.createElement('div');
                 div.innerText = dia;
                 
-                if (diaTodoBloqueado) {
+                // Validações de Bloqueio
+                let diaPassado = dataIteracao < hoje;
+                let configDia = cache.configuracoes.find(c => c.dia === diaSemanaNome);
+                let diaInativo = configDia && configDia.ativo === "nao";
+                let bloqueioManual = cache.agendamentos.some(a => a.data === dataISO && a.hora === 'DIA_INTEIRO' && a.status === 'Bloqueado');
+                
+                if (diaPassado || diaInativo || bloqueioManual) {
                     div.className = 'dia bloqueado';
-                    div.title = "Dia indisponível profissionalmente";
+                    if (diaPassado) div.title = "Data no passado";
+                    else if (diaInativo) div.title = "Mikaely não atende neste dia da semana";
+                    else div.title = "Dia bloqueado na agenda";
                 } else {
                     div.className = 'dia';
-                    div.onclick = () => abrirModalCliente(ano, mes, dia, dataISO);
+                    div.onclick = () => abrirModalCliente(ano, mes, dia, dataISO, diaSemanaNome);
                 }
                 grid.appendChild(div);
             }
         }
 
-        function abrirModalCliente(ano, mes, dia, dataISO) {
+        // ==========================================
+        // GERADOR DINÂMICO DE HORÁRIOS & MODAL
+        // ==========================================
+        function abrirModalCliente(ano, mes, dia, dataISO, diaSemanaNome) {
             document.getElementById('dataEscolhidaISO').value = dataISO;
             document.getElementById('dataSelecionadaStr').innerText = `${dia}/${mes+1}/${ano}`;
             
-            // Filtra quais horários já estão ocupados ou travados para este dia específico
-            let horasOcupadas = agendamentosExistentes
-                .filter(item => item.data === dataISO && (item.status === 'Agendado' || item.status === 'Bloqueado'))
-                .map(item => item.hora);
+            // 1. Carregar Serviços
+            let boxSrv = document.getElementById('boxServicos');
+            boxSrv.innerHTML = '';
+            let servicosAtivos = cache.servicos.filter(s => s.status === 'ativo');
+            
+            if (servicosAtivos.length === 0) {
+                boxSrv.innerHTML = "<small style='color:red;'>Nenhum serviço cadastrado pela administração.</small>";
+            } else {
+                servicosAtivos.forEach(s => {
+                    boxSrv.innerHTML += `
+                        <label class="servico-item">
+                            <input type="checkbox" value="${s.nome}" data-preco="${s.valor}" onchange="calcularTotal()"> 
+                            ${s.nome} <span style="color:#888; margin-left:5px;">(R$ ${parseFloat(s.valor).toFixed(2)})</span>
+                        </label>`;
+                });
+            }
+            calcularTotal(); // Zera o total
+
+            // 2. Gerar Horários baseado na Configuração da Mikaely
+            let configDia = cache.configuracoes.find(c => c.dia === diaSemanaNome) || { inicio: "09:00", fim: "18:00", pausaInicio: "12:00", pausaFim: "13:00", intervalo: "30" };
+            
+            let horasOcupadas = cache.agendamentos
+                .filter(a => a.data === dataISO && (a.status === 'Agendado' || a.status === 'Bloqueado' || a.status === 'Concluído'))
+                .map(a => a.hora);
                 
             let selectHora = document.getElementById('horaEscolhida');
             selectHora.innerHTML = '';
             
-            // Lista completa de 24h com intervalos de 1 hora
-            let horariosPadrao = [
-                "00:00", "01:00", "02:00", "03:00", "04:00", "05:00",
-                "06:00", "07:00", "08:00", "09:00", "10:00", "11:00",
-                "12:00", "13:00", "14:00", "15:00", "16:00", "17:00",
-                "18:00", "19:00", "20:00", "21:00", "22:00", "23:00"
-            ];
+            let horaAtual = converterParaMinutos(configDia.inicio);
+            let horaFim = converterParaMinutos(configDia.fim);
+            let pausaIni = converterParaMinutos(configDia.pausaInicio);
+            let pausaFim = converterParaMinutos(configDia.pausaFim);
+            let intervalo = parseInt(configDia.intervalo) || 30;
             
-            horariosPadrao.forEach(h => {
-                if (!horasOcupadas.includes(h)) {
-                    selectHora.innerHTML += `<option value="${h}">${h}</option>`;
-                    temVaga = true;
+            let temVaga = false;
+
+            while (horaAtual < horaFim) {
+                // Se não estiver na hora de almoço
+                if (horaAtual < pausaIni || horaAtual >= pausaFim) {
+                    let strHora = converterParaString(horaAtual);
+                    if (!horasOcupadas.includes(strHora)) {
+                        selectHora.innerHTML += `<option value="${strHora}">${strHora}</option>`;
+                        temVaga = true;
+                    }
                 }
-            });
-            
-            if (!temVaga) {
-                alert("Mikaely não possui mais horários disponíveis para este dia. Escolha outra data!");
-                return;
+                horaAtual += intervalo;
             }
+            
+            if (!temVaga) return alert("Agenda lotada para este dia! Por favor, escolha outra data.");
             
             document.getElementById('modalAgendamento').style.display = 'flex';
         }
 
+        // Funções de tempo auxiliares
+        function converterParaMinutos(horaStr) {
+            if(!horaStr) return 0;
+            let [h, m] = horaStr.split(':').map(Number);
+            return (h * 60) + m;
+        }
+        function converterParaString(minutosTotais) {
+            let h = Math.floor(minutosTotais / 60);
+            let m = minutosTotais % 60;
+            return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+        }
+
+        function calcularTotal() {
+            let total = 0;
+            document.querySelectorAll('#boxServicos input:checked').forEach(chk => {
+                total += parseFloat(chk.getAttribute('data-preco'));
+            });
+            document.getElementById('valorCalculado').innerText = total.toFixed(2);
+            return total;
+        }
+
         function fecharModal() { document.getElementById('modalAgendamento').style.display = 'none'; }
 
+        // ==========================================
+        // SALVAR DADOS
+        // ==========================================
         function salvarAgendamento() {
             const data = document.getElementById('dataEscolhidaISO').value;
             const hora = document.getElementById('horaEscolhida').value;
             const nome = document.getElementById('nomeCliente').value;
             const whats = document.getElementById('whatsCliente').value;
             const btn = document.getElementById('btnConfirmar');
+            
+            let servicosSelecionados = Array.from(document.querySelectorAll('#boxServicos input:checked')).map(c => c.value).join(', ');
+            let total = calcularTotal();
 
-            if(!nome || !whats) return alert("Por favor, preencha o seu nome e número de WhatsApp.");
+            if(!nome || !whats) return alert("Por favor, preencha nome e WhatsApp.");
+            if(!servicosSelecionados) return alert("Selecione pelo menos um serviço.");
 
-            btn.innerText = "Processando..."; btn.disabled = true;
+            btn.innerText = "Agendando..."; btn.disabled = true;
 
             const params = new URLSearchParams();
-            params.append('acao', 'criar');
+            params.append('acao', 'criar_agendamento');
             params.append('data', data);
             params.append('hora', hora);
             params.append('nome', nome);
             params.append('whatsapp', whats);
+            params.append('servicos', servicosSelecionados);
+            params.append('total', total);
             params.append('status', 'Agendado');
 
             fetch(URL_API, { method: 'POST', mode: 'no-cors', body: params }).then(() => {
                 document.getElementById('resNome').innerText = nome;
                 document.getElementById('resData').innerText = data.split('-').reverse().join('/');
                 document.getElementById('resHora').innerText = hora;
+                document.getElementById('resTotal').innerText = total.toFixed(2);
+                
                 fecharModal();
                 document.getElementById('telaCalendario').style.display = 'none';
                 document.getElementById('cardSucesso').style.display = 'block';
+                btn.innerText = "Confirmar Agendamento"; btn.disabled = false;
+                buscarDados(); // Força atualização do calendário por trás
+            }).catch(err => {
+                console.error(err);
+                alert("Ocorreu um erro de conexão. Tente novamente.");
                 btn.innerText = "Confirmar Agendamento"; btn.disabled = false;
             });
         }
 
         function enviarWhats() {
-            const n = document.getElementById('resNome').innerText; const d = document.getElementById('resData').innerText; const h = document.getElementById('resHora').innerText;
-            window.open(`https://wa.me/?text=${encodeURIComponent(`Olá! Sou ${n}. Acabei de realizar um agendamento no site para o dia ${d} às ${h}. Gostaria de confirmar!`)}`, '_blank');
+            const n = document.getElementById('resNome').innerText; 
+            const d = document.getElementById('resData').innerText; 
+            const h = document.getElementById('resHora').innerText;
+            const t = document.getElementById('resTotal').innerText;
+            const txt = `Olá! Sou ${n}. Acabei de agendar no app para o dia ${d} às ${h}. Total previsto: R$ ${t}. Gostaria de confirmar!`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
         }
 
         function voltarInicio() {
-            document.getElementById('telaCalendario').style.display = 'block'; document.getElementById('cardSucesso').style.display = 'none';
-            document.getElementById('nomeCliente').value = ''; document.getElementById('whatsCliente').value = '';
-            iniciarApp(); // Atualiza a grade com o agendamento recém-feito
+            document.getElementById('telaCalendario').style.display = 'block'; 
+            document.getElementById('cardSucesso').style.display = 'none';
+            document.getElementById('nomeCliente').value = ''; 
+            document.getElementById('whatsCliente').value = '';
+            document.querySelectorAll('#boxServicos input').forEach(c => c.checked = false);
+            calcularTotal();
         }
-
-        iniciarApp();
     </script>
 </body>
 </html>
