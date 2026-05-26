@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mikaely Nails - FREE</title>
     <style>
-        :root { --primary: #d81b60; --dark: #a6acba; --bg: #f8fafc; }
+        :root { --primary: #d81b60; --dark: #021712; --bg: #f8fafc; }
         body
         { 
     font-family: 'lucida handruriting', Comic Sans MS; margin: 0; padding: 20px; 
@@ -84,6 +84,39 @@
     color: #5234eb; /* Fica Roxo ao passar o mouse */
     text-decoration: underline;
 }
+
+        /* =========================================
+           CORREÇÃO DE LEITURA PARA FUNDO ESCURO
+           ========================================= */
+        .tab-content {
+            background: rgba(15, 23, 42, 0.75) !important; /* Fundo de vidro escuro transparente */
+            color: #ffffff !important;
+            border: 1px solid rgba(255, 215, 0, 0.2); /* Bordinha dourada super leve */
+        }
+        
+        .tab-content h2 {
+            color: #fce4ec !important; /* Rosa bem clarinho brilhante */
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.9);
+        }
+        
+        .tab-content p, #listaAgendamentos {
+            color: #f8fafc !important; /* Branco gelo */
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.9);
+        }
+        
+        #statusSincronizacao {
+            color: #4ade80 !important; /* Verde neon para destacar no escuro */
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.9);
+        }
+
+        /* Manter os cards internos brancos com texto escuro para não bagunçar */
+        .card-appointment, .calendario-box, table {
+            color: #333 !important;
+            text-shadow: none !important;
+        }
+        .card-appointment strong {
+            color: #d81b60 !important;
+        }
     </style>
 </head>
 <body>
