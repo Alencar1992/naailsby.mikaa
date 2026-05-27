@@ -259,5 +259,40 @@
             window.open(`https://wa.me/${nm}?text=${encodeURIComponent(txt)}`, '_blank');
         }
     </script>
+    <div id="footerRedes" style="margin-top:40px; padding:20px; display:flex; justify-content:center; gap:25px; border-top: 1px solid rgba(255,255,255,0.1);">
+    <a id="linkInsta" href="#" target="_blank" style="text-decoration:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" width="30" height="30" style="filter: brightness(0) invert(1);">
+    </a>
+    <a id="linkFace" href="#" target="_blank" style="text-decoration:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="30" height="30" style="filter: brightness(0) invert(1);">
+    </a>
+    <a id="linkWhats" href="#" target="_blank" style="text-decoration:none;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30" height="30">
+    </a>
+</div>
+
+<script>
+    // Função para atualizar os links no rodapé (chamar dentro da sua função buscarDados após atualizar o cache)
+    function atualizarRedesRodape() {
+        const redes = {
+            insta: cache.geral.find(g => g.chave === 'insta'),
+            face: cache.geral.find(g => g.chave === 'face'),
+            whats: cache.geral.find(g => g.chave === 'whatsapp')
+        };
+
+        if (redes.insta) document.getElementById('linkInsta').href = redes.insta.valor;
+        if (redes.face) document.getElementById('linkFace').href = redes.face.valor;
+        if (redes.whats) document.getElementById('linkWhats').href = "https://wa.me/" + redes.whats.valor.replace(/\D/g, '');
+    }
+
+    // Adicione a chamada 'atualizarRedesRodape()' dentro da sua função buscarDados
+    // Exemplo:
+    // ...
+    // if (dados.etag !== cache.etag) {
+    //     cache = dados;
+    //     atualizarRedesRodape(); // Adicione esta linha
+    //     montarCalendario();
+    // ...
+</script>
 </body>
 </html>
