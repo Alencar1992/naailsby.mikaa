@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mikaa Nails - Agendamento</title>
     <style>
-        :root { --primary: #d81b60; --gold: #D4AF37; --dark: #111; --text-dark: #334155; }
+        :root { --primary: #d81b60; --gold: #D4AF37; --dark: #111; --text-dark: #334155; --success: #10b981; --danger: #ef4444; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: var(--dark); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* LOADER ANIMADO (Regra de Carregamento) */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 99999; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
-        .loader-overlay.show { display: flex; }
-        .spinner { width: 60px; height: 60px; border: 6px solid rgba(212,175,55,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 2px; font-size: 14px; text-transform: uppercase; font-family: monospace; }
+        /* NOVO LOADER PREMIUM (Sucesso e Erro) */
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
+        .loader-overlay.show { display: flex; opacity: 1; }
+        .loader-content { background: rgba(20, 20, 20, 0.9); padding: 35px 40px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.3); display: flex; flex-direction: column; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .loader-overlay.show .loader-content { transform: scale(1); }
+        
+        .spinner { width: 55px; height: 55px; border: 4px solid rgba(212,175,55,0.1); border-left-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        .status-icon { width: 55px; height: 55px; border-radius: 50%; display: none; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: white; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .status-icon.success { background: var(--success); box-shadow: 0 0 20px rgba(16,185,129,0.4); display: none; }
+        .status-icon.error { background: var(--danger); box-shadow: 0 0 20px rgba(239,68,68,0.4); display: none; }
+        
+        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 1px; font-size: 15px; font-family: -apple-system, sans-serif; text-align: center; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* SPLASH SCREEN CLIENTE */
-        #splashClient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; background: url('logoapp.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: opacity 0.5s; }
+        #splashClient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; background: url('mika.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: opacity 0.5s; }
         .splash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.8) 100%); pointer-events: none; }
         .glow { position: absolute; top:-50px; right:-50px; width:200px; height:200px; background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%); }
         .star { position: absolute; width: 3px; height: 3px; background: var(--gold); border-radius: 50%; box-shadow: 0 0 5px var(--gold); animation: twinkle 2s infinite alternate; }
@@ -33,7 +41,7 @@
         .btn-agendar { position: relative; z-index: 2; margin-bottom: env(safe-area-inset-bottom, 30px); width: 90%; padding: 18px; border-radius: 18px; cursor: pointer; background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.40); color: rgba(255,255,255,0.9); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; backdrop-filter: blur(14px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); font-family: Georgia, serif; }
 
         /* APP PRINCIPAL */
-        #appMain { display: none; opacity: 0; transition: opacity 0.4s; background: url('logoapp.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: flex; flex-direction: column; align-items: center; }
+        #appMain { display: none; opacity: 0; transition: opacity 0.4s; background: url('mika.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: flex; flex-direction: column; align-items: center; }
         
         .card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 24px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; max-width: 420px; border-top: 6px solid var(--primary); margin-bottom: 20px; color: var(--text-dark); }
         
@@ -46,17 +54,16 @@
         .dia.vazio { background: transparent; border: none; cursor: default; }
         .dia.bloqueado { background: rgba(241, 245, 249, 0.7); border-color: #e2e8f0; color: #cbd5e1; cursor: not-allowed; text-decoration: line-through; }
         
-        /* BOTTOM SHEET COM CABEÇALHO (Regra de Voltar) */
+        /* BOTTOM SHEET */
         .bottom-sheet-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; display: flex; align-items: flex-end; justify-content: center;}
         .bottom-sheet-overlay.show { opacity: 1; pointer-events: auto; }
         .bottom-sheet { background: #ffffff; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
         .bottom-sheet-overlay.show .bottom-sheet { transform: translateY(0); }
         
-        /* CABEÇALHO DO BOTTOM SHEET */
         .bs-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 15px; }
         .btn-back { background: transparent; border: none; color: var(--primary); font-weight: bold; font-size: 16px; cursor: pointer; padding: 5px 10px; margin-left: -10px; display: flex; align-items: center; gap: 5px; }
         .bs-header h3 { margin: 0; color: var(--primary); font-size: 18px; text-align: center; flex-grow: 1; }
-        .bs-spacer { width: 70px; } /* Equilibra o botão voltar */
+        .bs-spacer { width: 70px; } 
         
         label { font-weight: 600; font-size: 14px; color: var(--text-dark); display: block; margin: 16px 0 8px 0; }
         input[type="text"], input[type="tel"], select { width: 100%; height: 48px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 16px; background: #f8fafc; padding: 0 16px; outline: none; }
@@ -72,7 +79,14 @@
 </head>
 <body>
 
-    <div id="loader" class="loader-overlay"><div class="spinner"></div><div class="loader-text" id="loaderText">Carregando...</div></div>
+    <div id="loader" class="loader-overlay">
+        <div class="loader-content">
+            <div id="loaderSpinner" class="spinner"></div>
+            <div id="loaderSuccess" class="status-icon success">✓</div>
+            <div id="loaderError" class="status-icon error">✖</div>
+            <div class="loader-text" id="loaderText">A processar...</div>
+        </div>
+    </div>
 
     <div id="splashClient">
         <div class="splash-overlay"></div>
@@ -92,7 +106,7 @@
             <p style="text-align:center; color:#555; margin:0 0 24px 0;">Selecione o dia desejado na agenda</p>
             <div class="header-mes">
                 <div class="nav-mes" onclick="mudarMes(-1)">❮</div>
-                <span id="mesAtualStr">Buscando...</span>
+                <span id="mesAtualStr">A procurar...</span>
                 <div class="nav-mes" onclick="mudarMes(1)">❯</div>
             </div>
             <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
@@ -111,18 +125,16 @@
             <button class="btn-principal" style="background:#e2e8f0; color:#333;" onclick="location.reload()">Voltar ao Início</button>
         </div>
 
-        <div class="footer-dev">Since @2026 - Dev Alencar - Version 1.0 Free Build 27.05.26 - BD GS.</div>
+        <div class="footer-dev">Since @2026 - Dev Alencar - Version 1.0 Free Build 26.05.26 - BD GS.</div>
     </div>
 
     <div class="bottom-sheet-overlay" id="modalAgendamento" onclick="fecharModalClickFora(event)">
         <div class="bottom-sheet">
-            
             <div class="bs-header">
                 <button class="btn-back" onclick="fecharModal()">❮ Voltar</button>
                 <h3><span id="dataSelecionadaStr"></span></h3>
                 <div class="bs-spacer"></div>
             </div>
-            
             <input type="hidden" id="dataEscolhidaISO">
             
             <label>Nome Completo:</label><input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
@@ -142,9 +154,31 @@
     <script>
         const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< URL DO APPS SCRIPT V5 AQUI
         
-        // Controle de Loader
-        function showLoader(msg = "Carregando...") { document.getElementById('loaderText').innerText = msg; document.getElementById('loader').classList.add('show'); }
+        // --- FUNÇÕES DO LOADER AVANÇADO ---
+        function showLoader(msg = "A processar...") { 
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--gold)";
+            document.getElementById('loaderSpinner').style.display = 'block';
+            document.getElementById('loaderSuccess').style.display = 'none';
+            document.getElementById('loaderError').style.display = 'none';
+            document.getElementById('loader').classList.add('show'); 
+        }
+        function showLoaderSuccess(msg = "Concluído!", autoClose = true) {
+            document.getElementById('loaderSpinner').style.display = 'none';
+            document.getElementById('loaderSuccess').style.display = 'flex';
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--success)";
+            if(autoClose) setTimeout(hideLoader, 2000);
+        }
+        function showLoaderError(msg = "Erro!", autoClose = true) {
+            document.getElementById('loaderSpinner').style.display = 'none';
+            document.getElementById('loaderError').style.display = 'flex';
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--danger)";
+            if(autoClose) setTimeout(hideLoader, 3000);
+        }
         function hideLoader() { document.getElementById('loader').classList.remove('show'); }
+        // ----------------------------------
 
         // Estrelas da Splash
         const sc = document.getElementById('starContainer');
@@ -187,7 +221,7 @@
         function montarCalendario() {
             const grid = document.getElementById('gridDias'); grid.innerHTML = '';
             let ano = mesVisao.getFullYear(); let mes = mesVisao.getMonth();
-            document.getElementById('mesAtualStr').innerText = mesVisao.toLocaleString('pt-BR', {month:'long'}) + " " + ano;
+            document.getElementById('mesAtualStr').innerText = mesVisao.toLocaleString('pt-PT', {month:'long'}) + " " + ano;
             let pDia = new Date(ano, mes, 1).getDay(); let dMes = new Date(ano, mes + 1, 0).getDate();
             let hoje = new Date(); hoje.setHours(0,0,0,0);
             
@@ -247,7 +281,6 @@
             document.getElementById('valorCalculado').innerText = t.toFixed(2).replace('.',','); return t;
         }
         
-        // Fechamento de modal seguro
         function fecharModal() { document.getElementById('modalAgendamento').classList.remove('show'); }
         function fecharModalClickFora(e) { if(e.target.id === 'modalAgendamento') fecharModal(); }
 
@@ -258,30 +291,34 @@
             
             if(!nome || !whats) return alert("Preencha nome e WhatsApp"); if(!sel) return alert("Escolha um serviço"); if(!hora) return alert("Horário inválido");
 
-            showLoader("Reservando Horário...");
+            showLoader("A reservar o horário...");
             const p = new URLSearchParams(); p.append('acao', 'criar_agendamento'); p.append('data', data); p.append('hora', hora); p.append('nome', nome);
             p.append('whatsapp', whats); p.append('servicos', sel); p.append('total', tot); p.append('status', 'Agendado'); p.append('pagamento', 'Pendente');
 
             fetch(URL_API, { method: 'POST', mode: 'no-cors', body: p }).then(() => {
                 setTimeout(() => {
                     fetch(URL_API + "?nocache=" + new Date().getTime()).then(r=>r.json()).then(d => {
-                        hideLoader();
                         cache = d;
                         if(d.agendamentos.some(a => a.data === data && a.hora === hora && a.nome === nome)) {
-                            document.getElementById('resNome').innerText = nome; document.getElementById('resData').innerText = data.split('-').reverse().join('/'); document.getElementById('resHora').innerText = hora; document.getElementById('resTotal').innerText = tot.toFixed(2).replace('.',',');
-                            fecharModal(); document.getElementById('telaCalendario').style.display='none'; document.getElementById('cardSucesso').style.display='block';
+                            showLoaderSuccess("Horário Confirmado!");
+                            setTimeout(() => {
+                                document.getElementById('resNome').innerText = nome; document.getElementById('resData').innerText = data.split('-').reverse().join('/'); document.getElementById('resHora').innerText = hora; document.getElementById('resTotal').innerText = tot.toFixed(2).replace('.',',');
+                                fecharModal(); document.getElementById('telaCalendario').style.display='none'; document.getElementById('cardSucesso').style.display='block';
+                            }, 1500);
                         } else {
-                            alert("⚠️ Este horário acabou de ser reservado. Por favor, escolha outro.");
+                            showLoaderError("Horário já ocupado!");
                             recarregarHorarios(data);
                         }
                     });
                 }, 1000);
+            }).catch(e => {
+                showLoaderError("Erro na ligação!");
             });
         }
 
         function enviarWhats() {
             let wp = cache.geral.find(g=>g.chave==='whatsapp'); let nm = wp ? wp.valor.replace(/\D/g,'') : "5511977729557";
-            let txt = `Olá Mikaely! Sou ${document.getElementById('resNome').innerText}. Agendei para dia ${document.getElementById('resData').innerText} às ${document.getElementById('resHora').innerText}.`;
+            let txt = `Olá Mikaely! Sou ${document.getElementById('resNome').innerText}. Agendei para o dia ${document.getElementById('resData').innerText} às ${document.getElementById('resHora').innerText}.`;
             window.open(`https://wa.me/${nm}?text=${encodeURIComponent(txt)}`, '_blank');
         }
     </script>
