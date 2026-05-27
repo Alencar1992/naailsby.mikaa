@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-PT">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
@@ -7,17 +7,25 @@
     <style>
         :root { --primary: #d81b60; --gold: #D4AF37; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: url('logomika.png') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: url('mika.png') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* LOADER ANIMADO */
-        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 99999; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
-        .loader-overlay.show { display: flex; }
-        .spinner { width: 60px; height: 60px; border: 6px solid rgba(212,175,55,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
-        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 2px; font-size: 14px; text-transform: uppercase; font-family: monospace; }
+        /* NOVO LOADER PREMIUM (Sucesso e Erro) */
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
+        .loader-overlay.show { display: flex; opacity: 1; }
+        .loader-content { background: rgba(20, 20, 20, 0.9); padding: 35px 40px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.3); display: flex; flex-direction: column; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.6); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .loader-overlay.show .loader-content { transform: scale(1); }
+        
+        .spinner { width: 55px; height: 55px; border: 4px solid rgba(212,175,55,0.1); border-left-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        .status-icon { width: 55px; height: 55px; border-radius: 50%; display: none; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: white; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .status-icon.success { background: var(--success); box-shadow: 0 0 20px rgba(16,185,129,0.4); display: none; }
+        .status-icon.error { background: var(--danger); box-shadow: 0 0 20px rgba(239,68,68,0.4); display: none; }
+        
+        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 1px; font-size: 15px; font-family: -apple-system, sans-serif; text-align: center; }
         @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
         /* SPLASH ADMIN */
-        #splashAdmin { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: url('logomika') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
+        #splashAdmin { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: url('mika.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
         .splash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%); pointer-events: none; }
         .logo-box { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         .ring-spin { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 1px solid transparent; border-top: 2px solid var(--gold); animation: spinLogo 4s linear infinite; }
@@ -79,14 +87,18 @@
         .grid-horarios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; margin-top: 10px; padding-right: 5px; }
         .hora-check { display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); padding: 12px 5px; border-radius: 8px; font-size: 14px; border: 1px solid #444; cursor: pointer; transition: 0.2s; color: white; }
         .hora-check.selected { background: var(--danger); border-color: var(--danger); font-weight: bold; }
-
-        #toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--success); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; transition: 0.4s; z-index: 9999; }
-        #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
 
-    <div id="loader" class="loader-overlay"><div class="spinner"></div><div class="loader-text" id="loaderText">Carregando...</div></div>
+    <div id="loader" class="loader-overlay">
+        <div class="loader-content">
+            <div id="loaderSpinner" class="spinner"></div>
+            <div id="loaderSuccess" class="status-icon success">✓</div>
+            <div id="loaderError" class="status-icon error">✖</div>
+            <div class="loader-text" id="loaderText">A processar...</div>
+        </div>
+    </div>
 
     <div id="splashAdmin">
         <div class="splash-overlay"></div>
@@ -161,9 +173,31 @@
         const diasSemana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
         const servicosBase = ["Unhas tradicionais", "Alongamentos", "Gel 💖", "Postiça realista", "Blindagem", "Banho de gel 💎"];
 
-        // CONTROLE DO LOADER ANIMADO
-        function showLoader(msg = "Processando...") { document.getElementById('loaderText').innerText = msg; document.getElementById('loader').classList.add('show'); }
+        // --- FUNÇÕES DO LOADER AVANÇADO ---
+        function showLoader(msg = "A processar...") { 
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--gold)";
+            document.getElementById('loaderSpinner').style.display = 'block';
+            document.getElementById('loaderSuccess').style.display = 'none';
+            document.getElementById('loaderError').style.display = 'none';
+            document.getElementById('loader').classList.add('show'); 
+        }
+        function showLoaderSuccess(msg = "Concluído!", autoClose = true) {
+            document.getElementById('loaderSpinner').style.display = 'none';
+            document.getElementById('loaderSuccess').style.display = 'flex';
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--success)";
+            if(autoClose) setTimeout(hideLoader, 1500);
+        }
+        function showLoaderError(msg = "Erro!", autoClose = true) {
+            document.getElementById('loaderSpinner').style.display = 'none';
+            document.getElementById('loaderError').style.display = 'flex';
+            document.getElementById('loaderText').innerText = msg;
+            document.getElementById('loaderText').style.color = "var(--danger)";
+            if(autoClose) setTimeout(hideLoader, 2500);
+        }
         function hideLoader() { document.getElementById('loader').classList.remove('show'); }
+        // ----------------------------------
 
         function abrirAdmin() {
             document.getElementById('splashAdmin').style.opacity = '0';
@@ -171,7 +205,6 @@
             document.getElementById('filtroData').value = new Date().toISOString().substring(0,10);
         }
 
-        // SMART POLLING ETAG
         function escutarBanco() {
             fetch(URL_API + "?nocache=" + new Date().getTime()).then(r => r.json()).then(d => {
                 if(d.etag !== cache.etag) {
@@ -195,7 +228,6 @@
             if(id==='historico') renderHistorico('dia'); if(id==='faturamento') renderFaturamento('dia');
         }
 
-        // FECHAR/ABRIR BOTTOM SHEETS COM BOTÃO VOLTAR
         function fecharBsAcao() { document.querySelectorAll('.bottom-sheet-overlay').forEach(b => b.classList.remove('show')); }
         function fecharBs(e) { if(!e || e.target.classList.contains('bottom-sheet-overlay')) fecharBsAcao(); }
         
@@ -206,14 +238,15 @@
             document.getElementById(id).classList.add('show'); 
         }
 
-        function toast(m) { let t=document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
-        
-        // ENVIO GENÉRICO COM LOADER
+        // ENVIO GENÉRICO COM O NOVO LOADER
         function disparar(pObj, msg) { 
-            showLoader("Salvando...");
+            showLoader("A guardar...");
             const p = new URLSearchParams(); for(let k in pObj) p.append(k, pObj[k]); 
             return fetch(URL_API, {method:'POST', mode:'no-cors', body:p}).then(()=>{ 
-                hideLoader(); toast(msg); setTimeout(escutarBanco, 800); 
+                showLoaderSuccess(msg); 
+                setTimeout(escutarBanco, 800); 
+            }).catch(e => {
+                showLoaderError("Erro na ligação!");
             }); 
         }
 
@@ -234,14 +267,14 @@
                         <div class="action-row">
                             <button onclick="preparaEdit('${a.id}')">✏️</button><button style="border-color:${bgPag}; color:${bgPag};" onclick="preparaPag('${a.id}')">${icPag}</button>
                             <button style="border-color:var(--danger); color:var(--danger)" onclick="preparaCanc('${a.id}','${a.nome}','${a.whatsapp}')">✖</button>
-                            <button class="btn-green" onclick="disparar({acao:'atualizar_status', id:'${a.id}', status:'Concluído'}, 'Feito!')">✔</button>
+                            <button class="btn-green" onclick="disparar({acao:'atualizar_status', id:'${a.id}', status:'Concluído'}, 'Concluído!')">✔</button>
                         </div>
                     </div>`;
             });
         }
         
         function preparaPag(id) { document.getElementById('pag_id').value = id; document.getElementById('bs-pagamento').classList.add('show'); }
-        function salvarPagamento(t) { disparar({acao:'atualizar_pagamento', id:document.getElementById('pag_id').value, pagamento:t}, "Pagamento salvo!"); fecharBsAcao(); }
+        function salvarPagamento(t) { disparar({acao:'atualizar_pagamento', id:document.getElementById('pag_id').value, pagamento:t}, "Pagamento guardado!"); fecharBsAcao(); }
 
         function preparaCanc(id, n, w) { document.getElementById('canc_id').value=id; document.getElementById('canc_nome').value=n; document.getElementById('canc_wp').value=w; document.getElementById('canc_motivo').value=''; document.getElementById('bs-cancelar').classList.add('show'); }
         function processarCancelamento(avs) {
@@ -258,15 +291,15 @@
         }
         function salvarEdicaoAgenda() {
             let s=[], t=0; document.querySelectorAll('#edit_listaSrv input:checked').forEach(c=>{s.push(c.value); t+=parseFloat(c.getAttribute('data-val'));});
-            disparar({acao:'editar_completo', id:document.getElementById('edit_id').value, data:document.getElementById('edit_data').value, hora:document.getElementById('edit_hora').value, servicos:s.join(', '), total:t.toFixed(2)}, "Alterado!"); fecharBsAcao();
+            disparar({acao:'editar_completo', id:document.getElementById('edit_id').value, data:document.getElementById('edit_data').value, hora:document.getElementById('edit_hora').value, servicos:s.join(', '), total:t.toFixed(2)}, "Alterado com sucesso!"); fecharBsAcao();
         }
 
         // ================== PENDENTES ==================
         function renderPendentes() {
             let c = document.getElementById('listaPendentes'); c.innerHTML='';
             let pends = cache.agendamentos.filter(a => a.pagamento === 'Pendente');
-            if(pends.length===0) return c.innerHTML='<p style="color:#888;">Nenhum pendente.</p>';
-            let pix = cache.geral.find(g=>g.chave==='pix'); let chP = pix?pix.valor:'Não cadastrada';
+            if(pends.length===0) return c.innerHTML='<p style="color:#888;">Nenhum pagamento pendente.</p>';
+            let pix = cache.geral.find(g=>g.chave==='pix'); let chP = pix?pix.valor:'Não registada';
             pends.forEach(p => {
                 let msg = `Olá, ${p.nome}! 😊 Lembrete do pagamento do serviço ${p.servicos} no valor de R$ ${p.total}. Chave Pix: ${chP}. Obrigada! 💅`;
                 c.innerHTML += `<div class="card glass"><div style="font-weight:bold; font-size:16px;">👤 ${p.nome}</div><div style="font-size:14px;">💰 R$ ${p.total} | 💅 ${p.servicos}<br>📅 ${p.data.split('-').reverse().join('/')}</div><button class="btn-whats" onclick="window.open('https://wa.me/55${p.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}', '_blank')">📱 Cobrar via WhatsApp</button></div>`;
@@ -296,20 +329,22 @@
 
         // ================== CONFIGURAÇÕES GERAIS ==================
         function carregaRedes() { ['insta','face','whatsapp'].forEach(k=>{let i=cache.geral.find(g=>g.chave===k); if(i)document.getElementById('cfg_'+(k==='whatsapp'?'whats':k)).value=i.valor;}); }
-        function salvarRedes() { showLoader(); Promise.all([ fetchPost({acao:'salvar_geral', chave:'insta', valor:document.getElementById('cfg_insta').value}), fetchPost({acao:'salvar_geral', chave:'face', valor:document.getElementById('cfg_face').value}), fetchPost({acao:'salvar_geral', chave:'whatsapp', valor:document.getElementById('cfg_whats').value}) ]).then(()=>{ hideLoader(); toast("Redes Salvas!"); fecharBsAcao(); escutarBanco(); }); }
+        function salvarRedes() { showLoader("A guardar Redes..."); Promise.all([ fetchPost({acao:'salvar_geral', chave:'insta', valor:document.getElementById('cfg_insta').value}), fetchPost({acao:'salvar_geral', chave:'face', valor:document.getElementById('cfg_face').value}), fetchPost({acao:'salvar_geral', chave:'whatsapp', valor:document.getElementById('cfg_whats').value}) ]).then(()=>{ showLoaderSuccess("Redes Guardadas!"); fecharBsAcao(); escutarBanco(); }).catch(e=>showLoaderError()); }
         
         function carregaPix() { let p = cache.geral.find(g=>g.chave==='pix'); if(p) document.getElementById('cfg_pix_val').value=p.valor; }
-        function salvarPix() { disparar({acao:'salvar_geral', chave:'pix', valor:document.getElementById('cfg_pix_val').value}, "Pix Salvo!"); fecharBsAcao(); }
+        function salvarPix() { disparar({acao:'salvar_geral', chave:'pix', valor:document.getElementById('cfg_pix_val').value}, "Pix Guardado!"); fecharBsAcao(); }
 
-        function fetchPost(pObj) { const p = new URLSearchParams(); for(let k in pObj) p.append(k, pObj[k]); return fetch(URL_API, {method:'POST', mode:'no-cors', body:p}); }
+        function fetchPost(pObj) { const p = newSearchParams(); for(let k in pObj) p.append(k, pObj[k]); return fetch(URL_API, {method:'POST', mode:'no-cors', body:p}); }
+        // Helper specifically for parallel fetches to avoid ReferenceError
+        function newSearchParams() { return new URLSearchParams(); }
 
-        // ================== NOVO SISTEMA DE BLOQUEIO MATRIZ ==================
+        // ================== BLOQUEIO MATRIZ ==================
         function renderGradeBloqueio() {
             let grid = document.getElementById('gridBloqueioHoras'); grid.innerHTML = '';
             for(let h=0; h<24; h++) {
                 for(let m=0; m<60; m+=30) {
-                    let hora = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
-                    grid.innerHTML += `<div class="hora-check" onclick="this.classList.toggle('selected')" data-hora="${hora}">${hora}</div>`;
+                    let hora = `${String(h).padStart(2,'0')}h${String(m).padStart(2,'0')}`;
+                    grid.innerHTML += `<div class="hora-check" onclick="this.classList.toggle('selected')" data-hora="${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}">${hora}</div>`;
                 }
             }
         }
@@ -323,40 +358,46 @@
             if(!data) return alert("Selecione uma data para bloquear.");
             let isDiaInteiro = document.getElementById('chk_dia_inteiro').checked;
             
-            showLoader("Travando a agenda...");
+            showLoader("A bloquear agenda...");
             
-            if(isDiaInteiro) {
-                await fetchPost({acao:'criar_agendamento', data:data, hora:'DIA_INTEIRO', nome:'BLOQUEIO MIKAELY', status:'Bloqueado'});
-            } else {
-                let selecionados = document.querySelectorAll('.hora-check.selected');
-                if(selecionados.length === 0) { hideLoader(); return alert("Selecione pelo menos um horário na grade ou marque Dia Inteiro."); }
-                
-                // Envio sequencial para não sobrecarregar o Google Apps Script
-                for(let el of selecionados) {
-                    await fetchPost({acao:'criar_agendamento', data:data, hora:el.getAttribute('data-hora'), nome:'BLOQUEIO MIKAELY', status:'Bloqueado'});
+            try {
+                if(isDiaInteiro) {
+                    const p = new URLSearchParams(); p.append('acao','criar_agendamento'); p.append('data',data); p.append('hora','DIA_INTEIRO'); p.append('nome','BLOQUEIO MIKAELY'); p.append('status','Bloqueado');
+                    await fetch(URL_API, {method:'POST', mode:'no-cors', body:p});
+                } else {
+                    let selecionados = document.querySelectorAll('.hora-check.selected');
+                    if(selecionados.length === 0) { hideLoader(); return alert("Selecione pelo menos um horário na grelha ou marque Dia Inteiro."); }
+                    
+                    for(let el of selecionados) {
+                        const p = new URLSearchParams(); p.append('acao','criar_agendamento'); p.append('data',data); p.append('hora',el.getAttribute('data-hora')); p.append('nome','BLOQUEIO MIKAELY'); p.append('status','Bloqueado');
+                        await fetch(URL_API, {method:'POST', mode:'no-cors', body:p});
+                    }
                 }
+                showLoaderSuccess("Horários bloqueados!");
+                fecharBsAcao(); escutarBanco();
+            } catch (error) {
+                showLoaderError("Falha ao bloquear.");
             }
-            hideLoader(); toast("Horários bloqueados com sucesso!"); fecharBsAcao(); escutarBanco();
         }
 
-        // ================== HORÁRIOS PADRÃO (Início e Fim) ==================
+        // ================== HORÁRIOS PADRÃO ==================
         function montaGrade() {
             let c = document.getElementById('listaDiasConfig'); c.innerHTML='';
             diasSemana.forEach(d => {
                 let cfg = cache.configuracoes.find(x=>x.dia===d) || {ativo:'sim', inicio:'09:00', fim:'18:00'}; let chk = cfg.ativo === 'sim' ? 'checked' : '';
                 c.innerHTML += `
                 <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid rgba(212,175,55,0.2);">
-                    <label style="margin:0 0 10px 0;"><input type="checkbox" id="chk_${d}" ${chk} style="width:16px; height:16px; margin:0 5px 0 0;"> <b style="font-size:16px;">${d}</b></label>
+                    <label style="margin:0 0 10px 0; color:white;"><input type="checkbox" id="chk_${d}" ${chk} style="width:16px; height:16px; margin:0 5px 0 0; accent-color:var(--gold);"> <b style="font-size:16px;">${d}</b></label>
                     <div style="display:flex; gap:10px; align-items:center; color:#aaa; font-size:14px;">
-                        <span>das</span><input type="time" id="ini_${d}" value="${cfg.inicio}"> 
-                        <span>até</span><input type="time" id="fim_${d}" value="${cfg.fim}">
+                        <span style="color:var(--gold);">das</span><input type="time" id="ini_${d}" value="${cfg.inicio}"> 
+                        <span style="color:var(--gold);">até</span><input type="time" id="fim_${d}" value="${cfg.fim}">
                     </div>
                 </div>`;
             });
         }
         function salvarGradeHorarios() {
             let lista = []; diasSemana.forEach(d => { lista.push({dia: d, ativo: document.getElementById(`chk_${d}`).checked?'sim':'nao', inicio: document.getElementById(`ini_${d}`).value, fim: document.getElementById(`fim_${d}`).value, pausaInicio:'12:00', pausaFim:'13:00', intervalo:'30'}); });
-            disparar({acao:'salvar_config', dadosJson: JSON.stringify(lista)}, "Semana salva!"); fecharBsAcao();
+            disparar({acao:'salvar_config', dadosJson: JSON.stringify(lista)}, "Semana Guardada!"); fecharBsAcao();
         }
 
         // ================== SERVIÇOS ==================
@@ -371,7 +412,7 @@
         function prepararEdSrv(id, n) { document.getElementById('edit_srv_id').value=id; document.getElementById('edit_srv_nome').value=n; document.getElementById('edit_srv_valor').value=''; document.getElementById('edit_srv_valor').focus(); }
         function salvarEdicaoServico() {
             let vStr = document.getElementById('edit_srv_valor').value; let vNum = parseFloat(vStr.replace(/[^\d,]/g, '').replace(',', '.')) || 0;
-            if(vNum <= 0) return alert("Digite um valor");
+            if(vNum <= 0) return alert("Insira um valor válido.");
             disparar({acao:'salvar_servico', id:document.getElementById('edit_srv_id').value, nome:document.getElementById('edit_srv_nome').value, valor:vNum}, "Preço atualizado!");
         }
     </script>
