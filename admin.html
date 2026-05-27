@@ -3,24 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Mikaa Admin Pro</title>
+    <title>Mikaa Nail - Agendamentos</title>
     <style>
         :root { --primary: #d81b60; --gold: #D4AF37; --success: #10b981; --danger: #ef4444; --warning: #f59e0b; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: url('logoapp.png') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; overflow-x: hidden; }
+        body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: url('logomika.png') no-repeat center center fixed; background-size: cover; color: #fff; min-height: 100vh; overflow-x: hidden; }
+
+        /* LOADER ANIMADO */
+        .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); z-index: 99999; display: none; justify-content: center; align-items: center; flex-direction: column; backdrop-filter: blur(5px); }
+        .loader-overlay.show { display: flex; }
+        .spinner { width: 60px; height: 60px; border: 6px solid rgba(212,175,55,0.2); border-top-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
+        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 2px; font-size: 14px; text-transform: uppercase; font-family: monospace; }
+        @keyframes spin { to { transform: rotate(360deg); } }
 
         /* SPLASH ADMIN */
-        #splashAdmin {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999;
-            background: url('logoapp.png') no-repeat center center; background-size: cover;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s;
-        }
+        #splashAdmin { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: url('logomika') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s; }
         .splash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.6) 50%, rgba(0,0,0,0.9) 100%); pointer-events: none; }
         .logo-box { position: relative; z-index: 2; display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .ring-spin { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 1px solid transparent; border-top: 2px solid var(--gold); animation: spin 4s linear infinite; }
+        .ring-spin { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 1px solid transparent; border-top: 2px solid var(--gold); animation: spinLogo 4s linear infinite; }
         .ring-glow { width: 120px; height: 120px; border-radius: 50%; box-shadow: 0 0 30px rgba(212,175,55,0.4); display: flex; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
         .ring-glow h1 { font-family: Georgia, serif; font-size: 32px; color: var(--gold); margin: 0; text-shadow: 0 0 10px rgba(0,0,0,0.8); }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spinLogo { 100% { transform: rotate(360deg); } }
         .subtitle { margin-top: 15px; font-size: 14px; letter-spacing: 4px; color: var(--gold); font-family: Georgia, serif; border-top: 1px solid rgba(212,175,55,0.5); padding-top: 5px; text-shadow: 0 2px 4px #000; }
         .hint-text { margin-top: 40px; font-size: 11px; color: rgba(255,255,255,0.4); letter-spacing: 2px; }
 
@@ -30,10 +33,9 @@
         .screen.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* UI LIQUID GLASS E CARDS */
+        /* CARDS LIQUID GLASS */
         .glass { background: rgba(15,23,42,0.65); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(212,175,55,0.3); box-shadow: 0 8px 32px rgba(0,0,0,0.4); border-radius: 16px; }
         .card { padding: 16px; margin-bottom: 16px; display: flex; flex-direction: column; gap: 8px; }
-        
         .header-sticky { position: sticky; top: env(safe-area-inset-top); z-index: 100; padding: 10px 0; margin-bottom: 10px; }
         .filter-input { width: 100%; height: 48px; border-radius: 12px; padding: 0 16px; font-size: 16px; font-weight: bold; background: rgba(255,255,255,0.1); color: white; border: 1px solid var(--gold); }
         .chip-group { display: flex; gap: 8px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
@@ -43,36 +45,48 @@
         /* BOTOES */
         .action-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-top: 8px; }
         button { height: 44px; border-radius: 12px; font-weight: bold; cursor: pointer; background: rgba(255,255,255,0.1); color: var(--gold); border: 1px solid rgba(212,175,55,0.3); display: flex; justify-content: center; align-items: center; }
-        .btn-full { width: 100%; background: var(--gold); color: black; margin-top: 10px; }
+        .btn-full { width: 100%; background: var(--gold); color: black; margin-top: 10px; height: 50px; font-size: 16px; }
         .btn-green { background: var(--success); color: white; border: none; }
         .btn-whats { background: #25D366; color: white; border: none; }
 
-        /* BOTTOM NAV (5 ITENS) */
+        /* BOTTOM NAV */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; display: flex; justify-content: space-around; padding: 12px 8px calc(12px + env(safe-area-inset-bottom)); background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); border-top: 1px solid var(--gold); z-index: 900; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: #888; font-size: 10px; gap: 4px; }
         .nav-item.active { color: var(--gold); }
         .nav-icon { font-size: 20px; }
 
-        /* FATURAMENTO E LISTAS */
+        /* LISTAS & FATURAMENTO */
         .fat-card { text-align: center; padding: 24px; border-radius: 20px; margin-bottom: 24px; }
         .fat-valor { font-size: 36px; font-weight: 900; color: var(--gold); margin: 8px 0; }
         .list-item { display: flex; justify-content: space-between; align-items: center; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(212,175,55,0.2); border-radius: 12px; margin-bottom: 8px; font-weight: bold; cursor: pointer; }
         
-        /* BOTTOM SHEETS */
+        /* BOTTOM SHEETS COM HEADER */
         .bottom-sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; display: flex; align-items: flex-end;}
         .bottom-sheet-overlay.show { opacity: 1; pointer-events: auto; }
-        .bottom-sheet { position: absolute; bottom: 0; left: 0; width: 100%; background: #1a1a1a; border-top: 1px solid var(--gold); border-radius: 24px 24px 0 0; padding: 24px 20px calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.3s; max-height: 85vh; overflow-y: auto; }
+        .bottom-sheet { background: #1a1a1a; border-top: 1px solid var(--gold); border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; margin: 0 auto; }
         .bottom-sheet-overlay.show .bottom-sheet { transform: translateY(0); }
-        .bs-handle { width: 40px; height: 5px; background: #666; border-radius: 3px; margin: 0 auto 20px auto; }
         
+        .bs-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 15px; }
+        .btn-back { background: transparent; border: none; color: var(--gold); font-weight: bold; font-size: 16px; cursor: pointer; padding: 5px 10px; margin-left: -10px; display: flex; align-items: center; gap: 5px; }
+        .bs-header h3 { margin: 0; color: var(--gold); font-size: 18px; text-align: center; flex-grow: 1; }
+        .bs-spacer { width: 70px; }
+
         label { font-size: 13px; color: var(--gold); display: block; margin: 15px 0 5px 0; }
-        input, select, textarea { width: 100%; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid #444; color: white; padding: 12px 16px; font-size: 16px; }
+        input, select, textarea { width: 100%; border-radius: 12px; background: rgba(255,255,255,0.1); border: 1px solid #444; color: white; padding: 12px 16px; font-size: 16px; outline:none; }
+        input:focus, textarea:focus { border-color: var(--gold); }
         
+        /* GRID DE BLOQUEIO 24 HORAS */
+        .grid-horarios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 300px; overflow-y: auto; margin-top: 10px; padding-right: 5px; }
+        .hora-check { display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); padding: 12px 5px; border-radius: 8px; font-size: 14px; border: 1px solid #444; cursor: pointer; transition: 0.2s; color: white; }
+        .hora-check.selected { background: var(--danger); border-color: var(--danger); font-weight: bold; }
+
         #toast { position: fixed; top: 40px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--success); color: white; padding: 12px 24px; border-radius: 30px; font-weight: bold; transition: 0.4s; z-index: 9999; }
         #toast.show { transform: translateX(-50%) translateY(0); }
     </style>
 </head>
 <body>
+
+    <div id="loader" class="loader-overlay"><div class="spinner"></div><div class="loader-text" id="loaderText">Carregando...</div></div>
 
     <div id="splashAdmin">
         <div class="splash-overlay"></div>
@@ -85,43 +99,26 @@
     </div>
 
     <div id="appMain">
-        
         <main id="agenda" class="screen active">
-            <div class="header-sticky">
-                <h2 style="color:var(--gold); margin:0 0 10px 0;">Agenda MIKAA</h2>
-                <input type="date" id="filtroData" class="filter-input" onchange="renderAgenda()">
-            </div>
+            <div class="header-sticky"><h2 style="color:var(--gold); margin:0 0 10px 0;">Agenda MIKAA</h2><input type="date" id="filtroData" class="filter-input" onchange="renderAgenda()"></div>
             <div id="listaAgenda"></div>
         </main>
 
         <main id="pendentes" class="screen">
-            <h2 style="color:var(--gold);">Pagamentos Pendentes</h2>
-            <p style="font-size:14px; opacity:0.8;">Clientes que ainda não acertaram o pagamento.</p>
+            <h2 style="color:var(--gold);">Pagamentos Pendentes</h2><p style="font-size:14px; opacity:0.8;">Clientes que ainda não acertaram.</p>
             <div id="listaPendentes"></div>
         </main>
 
         <main id="historico" class="screen">
             <h2 style="color:var(--gold);">Histórico Geral</h2>
-            <div class="chip-group">
-                <div class="chip active" onclick="filtrarHist('dia', this)">Dia</div>
-                <div class="chip" onclick="filtrarHist('semana', this)">Semana</div>
-                <div class="chip" onclick="filtrarHist('mes', this)">Mês</div>
-            </div>
+            <div class="chip-group"><div class="chip active" onclick="filtrarHist('dia', this)">Dia</div><div class="chip" onclick="filtrarHist('semana', this)">Semana</div><div class="chip" onclick="filtrarHist('mes', this)">Mês</div></div>
             <div id="listaHistorico" style="margin-top:20px;"></div>
         </main>
 
         <main id="faturamento" class="screen">
             <h2 style="color:var(--gold);">Faturamento</h2>
-            <div class="chip-group">
-                <div class="chip active" onclick="filtrarFat('dia', this)">Dia</div>
-                <div class="chip" onclick="filtrarFat('semana', this)">Semana</div>
-                <div class="chip" onclick="filtrarFat('mes', this)">Mês</div>
-            </div>
-            <div class="fat-card glass" style="margin-top:20px;">
-                <div style="font-size:14px; opacity:0.8; text-transform:uppercase;">Faturamento Bruto</div>
-                <div class="fat-valor" id="fatTotal">R$ 0,00</div>
-                <div style="font-size:14px; color:var(--primary); font-weight:bold;" id="fatQtd">0 Atendimentos</div>
-            </div>
+            <div class="chip-group"><div class="chip active" onclick="filtrarFat('dia', this)">Dia</div><div class="chip" onclick="filtrarFat('semana', this)">Semana</div><div class="chip" onclick="filtrarFat('mes', this)">Mês</div></div>
+            <div class="fat-card glass" style="margin-top:20px;"><div style="font-size:14px; opacity:0.8;">FATURAMENTO BRUTO</div><div class="fat-valor" id="fatTotal">R$ 0,00</div><div style="font-size:14px; color:var(--primary); font-weight:bold;" id="fatQtd">0 Atendimentos</div></div>
         </main>
 
         <main id="config" class="screen">
@@ -142,58 +139,31 @@
         </nav>
     </div>
 
-    <div class="bottom-sheet-overlay" id="bs-pagamento" onclick="fecharBs(event)">
-        <div class="bottom-sheet">
-            <div class="bs-handle"></div><h3 style="color:var(--gold);">Status de Pagamento</h3>
-            <input type="hidden" id="pag_id">
-            <button class="btn-full btn-green" onclick="salvarPagamento('Pix')">✅ Pix</button>
-            <button class="btn-full btn-green" onclick="salvarPagamento('Débito')">💳 Débito</button>
-            <button class="btn-full btn-green" onclick="salvarPagamento('Crédito')">💳 Crédito</button>
-            <button class="btn-full" style="border-color:var(--warning); color:var(--warning); background:transparent;" onclick="salvarPagamento('Pendente')">⏳ Pendente de Pagamento</button>
-        </div>
-    </div>
+    <div class="bottom-sheet-overlay" id="bs-pagamento" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Status de Pagamento</h3><div class="bs-spacer"></div></div><input type="hidden" id="pag_id"><button class="btn-full btn-green" onclick="salvarPagamento('Pix')">✅ Pix</button><button class="btn-full btn-green" onclick="salvarPagamento('Débito')">💳 Débito</button><button class="btn-full btn-green" onclick="salvarPagamento('Crédito')">💳 Crédito</button><button class="btn-full" style="border-color:var(--warning); color:var(--warning); background:transparent;" onclick="salvarPagamento('Pendente')">⏳ Pendente de Pagamento</button></div></div>
 
-    <div class="bottom-sheet-overlay" id="bs-editar" onclick="fecharBs(event)">
-        <div class="bottom-sheet">
-            <div class="bs-handle"></div><h3 style="color:var(--gold);">Editar Agendamento</h3>
-            <input type="hidden" id="edit_id">
-            <label>Data:</label><input type="date" id="edit_data">
-            <label>Hora:</label><input type="time" id="edit_hora">
-            <label>Adicionar / Remover Serviços:</label>
-            <div id="edit_listaSrv" style="max-height:150px; overflow-y:auto; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;"></div>
-            <button class="btn-full" onclick="salvarEdicaoAgenda()">💾 Salvar Alterações</button>
-        </div>
-    </div>
+    <div class="bottom-sheet-overlay" id="bs-editar" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Editar Agendamento</h3><div class="bs-spacer"></div></div><input type="hidden" id="edit_id"><label>Data:</label><input type="date" id="edit_data"><label>Hora:</label><input type="time" id="edit_hora"><label>Adicionar / Remover Serviços:</label><div id="edit_listaSrv" style="max-height:150px; overflow-y:auto; background:rgba(255,255,255,0.05); padding:10px; border-radius:12px;"></div><button class="btn-full" onclick="salvarEdicaoAgenda()">💾 Salvar Alterações</button></div></div>
 
-    <div class="bottom-sheet-overlay" id="bs-cancelar" onclick="fecharBs(event)">
-        <div class="bottom-sheet">
-            <div class="bs-handle"></div><h3 style="color:var(--danger)">Cancelar Agendamento</h3>
-            <input type="hidden" id="canc_id"><input type="hidden" id="canc_nome"><input type="hidden" id="canc_wp">
-            <label>Motivo do cancelamento:</label><textarea id="canc_motivo" placeholder="Descreva o motivo..."></textarea>
-            <button class="btn-full btn-whats" onclick="processarCancelamento(true)">📱 Cancelar e Avisar via Whats</button>
-            <button class="btn-full" style="background:transparent; color:var(--danger); border-color:var(--danger);" onclick="processarCancelamento(false)">✖ Cancelar silenciosamente</button>
-        </div>
-    </div>
+    <div class="bottom-sheet-overlay" id="bs-cancelar" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3 style="color:var(--danger)">Cancelar Agendamento</h3><div class="bs-spacer"></div></div><input type="hidden" id="canc_id"><input type="hidden" id="canc_nome"><input type="hidden" id="canc_wp"><label>Motivo do cancelamento:</label><textarea id="canc_motivo" placeholder="Descreva o motivo..."></textarea><button class="btn-full btn-whats" onclick="processarCancelamento(true)">📱 Cancelar e Avisar via Whats</button><button class="btn-full" style="background:transparent; color:var(--danger); border-color:var(--danger);" onclick="processarCancelamento(false)">✖ Cancelar silenciosamente</button></div></div>
 
-    <div class="bottom-sheet-overlay" id="bs-redes" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-handle"></div><h3 style="color:var(--gold);">Redes Sociais e WhatsApp</h3><label>Instagram Link:</label><input type="url" id="cfg_insta"><label>Facebook Link:</label><input type="url" id="cfg_face"><label>WhatsApp Oficial (apenas números):</label><input type="tel" id="cfg_whats"><button class="btn-full" onclick="salvarRedes()">Salvar Redes</button></div></div>
+    <div class="bottom-sheet-overlay" id="bs-redes" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Redes Sociais</h3><div class="bs-spacer"></div></div><label>Instagram Link:</label><input type="url" id="cfg_insta"><label>Facebook Link:</label><input type="url" id="cfg_face"><label>WhatsApp Oficial (apenas números):</label><input type="tel" id="cfg_whats"><button class="btn-full" onclick="salvarRedes()">Salvar Redes</button></div></div>
     
-    <div class="bottom-sheet-overlay" id="bs-pix" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-handle"></div><h3 style="color:var(--gold);">Chave Pix Oficial</h3><label>Chave que será enviada aos clientes:</label><input type="text" id="cfg_pix_val" placeholder="Sua Chave Pix"><button class="btn-full" onclick="salvarPix()">Salvar Pix</button></div></div>
+    <div class="bottom-sheet-overlay" id="bs-pix" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Chave Pix Oficial</h3><div class="bs-spacer"></div></div><label>Chave que será enviada aos clientes:</label><input type="text" id="cfg_pix_val" placeholder="Sua Chave Pix"><button class="btn-full" onclick="salvarPix()">Salvar Pix</button></div></div>
     
-    <div class="bottom-sheet-overlay" id="bs-bloqueio" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-handle"></div><h3 style="color:var(--gold);">Bloquear Horário/Dia</h3><label>Data:</label><input type="date" id="blk_data"><label>Horário:</label><select id="blk_hora"><option value="DIA_INTEIRO">Bloquear o Dia Inteiro</option><option value="09:00">09:00</option><option value="15:00">15:00</option></select><button class="btn-full" style="background:var(--danger); color:white;" onclick="salvarBloqueio()">Bloquear na Agenda</button></div></div>
+    <div class="bottom-sheet-overlay" id="bs-bloqueio" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Bloquear Horários</h3><div class="bs-spacer"></div></div><label>Data:</label><input type="date" id="blk_data"><label style="display:flex; align-items:center; gap:10px; margin-top:20px; background:rgba(255,255,255,0.05); padding:10px; border-radius:8px;"><input type="checkbox" id="chk_dia_inteiro" onchange="toggleGridBloqueio(this.checked)" style="width:24px; height:24px; margin:0;"> <span style="font-size:15px; color:white;">Bloquear o Dia Inteiro</span></label><label>Selecione os horários para bloquear:</label><div id="gridBloqueioHoras" class="grid-horarios"></div><button class="btn-full" style="background:var(--danger); color:white;" onclick="salvarBloqueio()">Bloquear na Agenda</button></div></div>
     
-    <div class="bottom-sheet-overlay" id="bs-horarios" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-handle"></div><h3 style="color:var(--gold);">Horário de Atendimento</h3><div id="listaDiasConfig"></div><button class="btn-full" onclick="salvarGradeHorarios()">Salvar Grade da Semana</button></div></div>
+    <div class="bottom-sheet-overlay" id="bs-horarios" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Horário de Atendimento</h3><div class="bs-spacer"></div></div><div id="listaDiasConfig"></div><button class="btn-full" onclick="salvarGradeHorarios()">Salvar Grade da Semana</button></div></div>
     
-    <div class="bottom-sheet-overlay" id="bs-servicos" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-handle"></div><h3 style="color:var(--gold);">Serviços e Valores</h3><div id="listaServicosConfig"></div><div style="margin-top:20px; border-top:1px solid #444; padding-top:10px;"><label>Editar Valor (R$):</label><input type="hidden" id="edit_srv_id"><input type="text" id="edit_srv_nome" disabled style="opacity:0.5;"><input type="text" id="edit_srv_valor" inputmode="numeric" oninput="mascaraMoeda(this)" placeholder="R$ 0,00"><button class="btn-full" onclick="salvarEdicaoServico()">Salvar Valor</button></div></div></div>
+    <div class="bottom-sheet-overlay" id="bs-servicos" onclick="fecharBs(event)"><div class="bottom-sheet"><div class="bs-header"><button class="btn-back" onclick="fecharBsAcao()">❮ Voltar</button><h3>Serviços e Valores</h3><div class="bs-spacer"></div></div><div id="listaServicosConfig" class="config-list"></div><div style="margin-top:20px; border-top:1px solid #444; padding-top:10px;"><label>Editar Valor (R$):</label><input type="hidden" id="edit_srv_id"><input type="text" id="edit_srv_nome" disabled style="opacity:0.5; margin-bottom:5px;"><input type="text" id="edit_srv_valor" inputmode="numeric" oninput="mascaraMoeda(this)" placeholder="R$ 0,00"><button class="btn-full" onclick="salvarEdicaoServico()">Salvar Valor</button></div></div></div>
 
     <script>
-        // ==========================================
-        // CONSTANTES E SETUP INICIAL
-        // ==========================================
         const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< URL DO APPS SCRIPT V5 AQUI
-        
         let cache = { agendamentos: [], servicos: [], configuracoes: [], geral: [], etag: "" };
         const diasSemana = ["Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado", "Domingo"];
         const servicosBase = ["Unhas tradicionais", "Alongamentos", "Gel 💖", "Postiça realista", "Blindagem", "Banho de gel 💎"];
+
+        // CONTROLE DO LOADER ANIMADO
+        function showLoader(msg = "Processando...") { document.getElementById('loaderText').innerText = msg; document.getElementById('loader').classList.add('show'); }
+        function hideLoader() { document.getElementById('loader').classList.remove('show'); }
 
         function abrirAdmin() {
             document.getElementById('splashAdmin').style.opacity = '0';
@@ -201,9 +171,7 @@
             document.getElementById('filtroData').value = new Date().toISOString().substring(0,10);
         }
 
-        // ==========================================
-        // SMART POLLING (TEMPO REAL ETAG)
-        // ==========================================
+        // SMART POLLING ETAG
         function escutarBanco() {
             fetch(URL_API + "?nocache=" + new Date().getTime()).then(r => r.json()).then(d => {
                 if(d.etag !== cache.etag) {
@@ -219,9 +187,6 @@
         }
         escutarBanco(); setInterval(escutarBanco, 4000);
 
-        // ==========================================
-        // UI & NAVEGAÇÃO
-        // ==========================================
         function nav(id, el) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -229,23 +194,34 @@
             if(id==='agenda') renderAgenda(); if(id==='pendentes') renderPendentes();
             if(id==='historico') renderHistorico('dia'); if(id==='faturamento') renderFaturamento('dia');
         }
-        function fecharBs(e) { if(!e || e.target.classList.contains('bottom-sheet-overlay')) document.querySelectorAll('.bottom-sheet-overlay').forEach(b => b.classList.remove('show')); }
+
+        // FECHAR/ABRIR BOTTOM SHEETS COM BOTÃO VOLTAR
+        function fecharBsAcao() { document.querySelectorAll('.bottom-sheet-overlay').forEach(b => b.classList.remove('show')); }
+        function fecharBs(e) { if(!e || e.target.classList.contains('bottom-sheet-overlay')) fecharBsAcao(); }
+        
         function abrirBs(id) { 
             if(id === 'bs-redes') carregaRedes(); if(id === 'bs-pix') carregaPix();
             if(id === 'bs-horarios') montaGrade(); if(id === 'bs-servicos') montaSrv();
+            if(id === 'bs-bloqueio') { document.getElementById('blk_data').value = new Date().toISOString().substring(0,10); renderGradeBloqueio(); }
             document.getElementById(id).classList.add('show'); 
         }
-        function toast(m) { let t=document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
-        function disparar(pObj, msg) { const p = new URLSearchParams(); for(let k in pObj) p.append(k, pObj[k]); fetch(URL_API, {method:'POST', mode:'no-cors', body:p}).then(()=>{ toast(msg); setTimeout(escutarBanco, 800); }); }
 
-        // ==========================================
-        // AGENDA (Edição, Status, Cancelamento, Pagamento)
-        // ==========================================
+        function toast(m) { let t=document.getElementById('toast'); t.innerText=m; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 3000); }
+        
+        // ENVIO GENÉRICO COM LOADER
+        function disparar(pObj, msg) { 
+            showLoader("Salvando...");
+            const p = new URLSearchParams(); for(let k in pObj) p.append(k, pObj[k]); 
+            return fetch(URL_API, {method:'POST', mode:'no-cors', body:p}).then(()=>{ 
+                hideLoader(); toast(msg); setTimeout(escutarBanco, 800); 
+            }); 
+        }
+
+        // ================== AGENDA ==================
         function renderAgenda() {
             let dt = document.getElementById('filtroData').value; let c = document.getElementById('listaAgenda'); c.innerHTML = '';
             let ags = cache.agendamentos.filter(a => a.data === dt && a.status === 'Agendado');
             ags.sort((a,b) => a.hora.localeCompare(b.hora));
-            
             if(ags.length===0) return c.innerHTML = '<p style="text-align:center; color:#888;">Nenhum agendamento ativo.</p>';
             
             ags.forEach(a => {
@@ -253,14 +229,10 @@
                 let icPag = a.pagamento === 'Pendente' ? '⏳' : '💳';
                 c.innerHTML += `
                     <div class="card glass">
-                        <div style="display:flex; justify-content:space-between;">
-                            <div style="font-size:20px; font-weight:800; color:var(--gold);">${a.hora}</div>
-                            <div style="font-size:16px; font-weight:bold;">${a.nome}</div>
-                        </div>
+                        <div style="display:flex; justify-content:space-between;"><div style="font-size:20px; font-weight:800; color:var(--gold);">${a.hora}</div><div style="font-size:16px; font-weight:bold;">${a.nome}</div></div>
                         <div style="font-size:14px; opacity:0.8; margin-top:5px;">💅 ${a.servicos} <br>💰 R$ ${a.total} (${a.pagamento})</div>
                         <div class="action-row">
-                            <button onclick="preparaEdit('${a.id}')">✏️</button>
-                            <button style="border-color:${bgPag}; color:${bgPag};" onclick="preparaPag('${a.id}')">${icPag}</button>
+                            <button onclick="preparaEdit('${a.id}')">✏️</button><button style="border-color:${bgPag}; color:${bgPag};" onclick="preparaPag('${a.id}')">${icPag}</button>
                             <button style="border-color:var(--danger); color:var(--danger)" onclick="preparaCanc('${a.id}','${a.nome}','${a.whatsapp}')">✖</button>
                             <button class="btn-green" onclick="disparar({acao:'atualizar_status', id:'${a.id}', status:'Concluído'}, 'Feito!')">✔</button>
                         </div>
@@ -269,31 +241,27 @@
         }
         
         function preparaPag(id) { document.getElementById('pag_id').value = id; document.getElementById('bs-pagamento').classList.add('show'); }
-        function salvarPagamento(tipo) { disparar({acao:'atualizar_pagamento', id:document.getElementById('pag_id').value, pagamento:tipo}, "Pagamento salvo!"); fecharBs(); }
+        function salvarPagamento(t) { disparar({acao:'atualizar_pagamento', id:document.getElementById('pag_id').value, pagamento:t}, "Pagamento salvo!"); fecharBsAcao(); }
 
         function preparaCanc(id, n, w) { document.getElementById('canc_id').value=id; document.getElementById('canc_nome').value=n; document.getElementById('canc_wp').value=w; document.getElementById('canc_motivo').value=''; document.getElementById('bs-cancelar').classList.add('show'); }
-        function processarCancelamento(avisar) {
+        function processarCancelamento(avs) {
             let m = document.getElementById('canc_motivo').value; disparar({acao:'atualizar_status', id:document.getElementById('canc_id').value, status:'Cancelado', justificativa: m}, "Cancelado!");
-            if(avisar) { let n=document.getElementById('canc_nome').value; let num=document.getElementById('canc_wp').value.replace(/\D/g,''); let t=`Olá ${n}. Agendamento cancelado. Motivo: ${m||'Não informado'}`; window.open(`https://wa.me/55${num}?text=${encodeURIComponent(t)}`, '_blank'); }
-            fecharBs();
+            if(avs) { let n=document.getElementById('canc_nome').value; let num=document.getElementById('canc_wp').value.replace(/\D/g,''); let t=`Olá ${n}. Agendamento cancelado. Motivo: ${m||'Não informado'}`; window.open(`https://wa.me/55${num}?text=${encodeURIComponent(t)}`, '_blank'); }
+            fecharBsAcao();
         }
 
         function preparaEdit(id) {
             let a = cache.agendamentos.find(x=>x.id===id); document.getElementById('edit_id').value=a.id; document.getElementById('edit_data').value=a.data; document.getElementById('edit_hora').value=a.hora;
             let ls = document.getElementById('edit_listaSrv'); ls.innerHTML=''; let sArr = a.servicos.split(', ');
-            cache.servicos.filter(s=>s.status==='ativo').forEach(s => {
-                let c = sArr.includes(s.nome)?'checked':''; ls.innerHTML += `<label style="display:flex; align-items:center; color:white;"><input type="checkbox" value="${s.nome}" data-val="${s.valor}" ${c} style="width:20px; height:20px; margin-right:10px;"> ${s.nome}</label>`;
-            });
+            cache.servicos.filter(s=>s.status==='ativo').forEach(s => { let c = sArr.includes(s.nome)?'checked':''; ls.innerHTML += `<label style="display:flex; align-items:center; color:white; margin-bottom:10px;"><input type="checkbox" value="${s.nome}" data-val="${s.valor}" ${c} style="width:20px; height:20px; margin-right:10px;"> ${s.nome}</label>`; });
             document.getElementById('bs-editar').classList.add('show');
         }
         function salvarEdicaoAgenda() {
             let s=[], t=0; document.querySelectorAll('#edit_listaSrv input:checked').forEach(c=>{s.push(c.value); t+=parseFloat(c.getAttribute('data-val'));});
-            disparar({acao:'editar_completo', id:document.getElementById('edit_id').value, data:document.getElementById('edit_data').value, hora:document.getElementById('edit_hora').value, servicos:s.join(', '), total:t.toFixed(2)}, "Alterado!"); fecharBs();
+            disparar({acao:'editar_completo', id:document.getElementById('edit_id').value, data:document.getElementById('edit_data').value, hora:document.getElementById('edit_hora').value, servicos:s.join(', '), total:t.toFixed(2)}, "Alterado!"); fecharBsAcao();
         }
 
-        // ==========================================
-        // PENDENTES
-        // ==========================================
+        // ================== PENDENTES ==================
         function renderPendentes() {
             let c = document.getElementById('listaPendentes'); c.innerHTML='';
             let pends = cache.agendamentos.filter(a => a.pagamento === 'Pendente');
@@ -301,24 +269,17 @@
             let pix = cache.geral.find(g=>g.chave==='pix'); let chP = pix?pix.valor:'Não cadastrada';
             pends.forEach(p => {
                 let msg = `Olá, ${p.nome}! 😊 Lembrete do pagamento do serviço ${p.servicos} no valor de R$ ${p.total}. Chave Pix: ${chP}. Obrigada! 💅`;
-                c.innerHTML += `<div class="card glass">
-                    <div style="font-weight:bold; font-size:16px;">👤 ${p.nome}</div>
-                    <div style="font-size:14px;">💰 R$ ${p.total} | 💅 ${p.servicos}<br>📅 ${p.data.split('-').reverse().join('/')}</div>
-                    <button class="btn-whats" onclick="window.open('https://wa.me/55${p.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}', '_blank')">📱 Cobrar via WhatsApp</button>
-                </div>`;
+                c.innerHTML += `<div class="card glass"><div style="font-weight:bold; font-size:16px;">👤 ${p.nome}</div><div style="font-size:14px;">💰 R$ ${p.total} | 💅 ${p.servicos}<br>📅 ${p.data.split('-').reverse().join('/')}</div><button class="btn-whats" onclick="window.open('https://wa.me/55${p.whatsapp.replace(/\D/g,'')}?text=${encodeURIComponent(msg)}', '_blank')">📱 Cobrar via WhatsApp</button></div>`;
             });
         }
 
-        // ==========================================
-        // HISTÓRICO E FATURAMENTO
-        // ==========================================
+        // ================== HISTÓRICO & FATURAMENTO ==================
         function getFiltro(t) {
             let h = new Date(); h.setHours(0,0,0,0); let di = new Date(h), df = new Date(h);
             if(t==='semana'){ let d=h.getDay(); di.setDate(h.getDate()-d); df.setDate(h.getDate()+(6-d)); }
             if(t==='mes'){ di.setDate(1); df=new Date(h.getFullYear(), h.getMonth()+1, 0); }
             return { i: di.toISOString().substring(0,10), f: df.toISOString().substring(0,10) };
         }
-        
         function filtrarHist(t, el) { document.querySelectorAll('#historico .chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderHistorico(t); }
         function renderHistorico(t) {
             let lim = getFiltro(t); let c = document.getElementById('listaHistorico'); c.innerHTML = '';
@@ -326,7 +287,6 @@
             if(concl.length===0) return c.innerHTML = '<p>Vazio.</p>';
             concl.forEach(a => { c.innerHTML += `<div class="card glass" style="flex-direction:row; justify-content:space-between; padding:12px;"><div style="font-weight:bold; color:var(--gold);">${a.nome}<br><small style="color:#aaa;">${a.data.split('-').reverse().join('/')}</small></div><div style="text-align:right;">R$ ${a.total}<br><small>${a.pagamento}</small></div></div>`; });
         }
-
         function filtrarFat(t, el) { document.querySelectorAll('#faturamento .chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); renderFaturamento(t); }
         function renderFaturamento(t) {
             let lim = getFiltro(t); let concl = cache.agendamentos.filter(a => a.status === 'Concluído' && a.data >= lim.i && a.data <= lim.f);
@@ -334,29 +294,72 @@
             document.getElementById('fatTotal').innerText = `R$ ${tot.toFixed(2).replace('.',',')}`; document.getElementById('fatQtd').innerText = `${concl.length} Atendimentos`;
         }
 
-        // ==========================================
-        // CONFIGURAÇÕES (Serviços, Redes, Pix, Grade)
-        // ==========================================
+        // ================== CONFIGURAÇÕES GERAIS ==================
         function carregaRedes() { ['insta','face','whatsapp'].forEach(k=>{let i=cache.geral.find(g=>g.chave===k); if(i)document.getElementById('cfg_'+(k==='whatsapp'?'whats':k)).value=i.valor;}); }
-        function salvarRedes() { ['insta','face','whatsapp'].forEach(k=>{disparar({acao:'salvar_geral', chave:k, valor:document.getElementById('cfg_'+(k==='whatsapp'?'whats':k)).value}, "Salvo!");}); fecharBs(); }
+        function salvarRedes() { showLoader(); Promise.all([ fetchPost({acao:'salvar_geral', chave:'insta', valor:document.getElementById('cfg_insta').value}), fetchPost({acao:'salvar_geral', chave:'face', valor:document.getElementById('cfg_face').value}), fetchPost({acao:'salvar_geral', chave:'whatsapp', valor:document.getElementById('cfg_whats').value}) ]).then(()=>{ hideLoader(); toast("Redes Salvas!"); fecharBsAcao(); escutarBanco(); }); }
         
         function carregaPix() { let p = cache.geral.find(g=>g.chave==='pix'); if(p) document.getElementById('cfg_pix_val').value=p.valor; }
-        function salvarPix() { disparar({acao:'salvar_geral', chave:'pix', valor:document.getElementById('cfg_pix_val').value}, "Pix Salvo!"); fecharBs(); }
-        
-        function salvarBloqueio() { disparar({acao:'criar_agendamento', data:document.getElementById('blk_data').value, hora:document.getElementById('blk_hora').value, nome:'BLOQUEIO MIKAELY', status:'Bloqueado'}, "Bloqueado!"); fecharBs(); }
+        function salvarPix() { disparar({acao:'salvar_geral', chave:'pix', valor:document.getElementById('cfg_pix_val').value}, "Pix Salvo!"); fecharBsAcao(); }
 
+        function fetchPost(pObj) { const p = new URLSearchParams(); for(let k in pObj) p.append(k, pObj[k]); return fetch(URL_API, {method:'POST', mode:'no-cors', body:p}); }
+
+        // ================== NOVO SISTEMA DE BLOQUEIO MATRIZ ==================
+        function renderGradeBloqueio() {
+            let grid = document.getElementById('gridBloqueioHoras'); grid.innerHTML = '';
+            for(let h=0; h<24; h++) {
+                for(let m=0; m<60; m+=30) {
+                    let hora = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}`;
+                    grid.innerHTML += `<div class="hora-check" onclick="this.classList.toggle('selected')" data-hora="${hora}">${hora}</div>`;
+                }
+            }
+        }
+        function toggleGridBloqueio(chk) {
+            let grid = document.getElementById('gridBloqueioHoras');
+            grid.style.opacity = chk ? '0.3' : '1'; grid.style.pointerEvents = chk ? 'none' : 'auto';
+        }
+        
+        async function salvarBloqueio() {
+            let data = document.getElementById('blk_data').value;
+            if(!data) return alert("Selecione uma data para bloquear.");
+            let isDiaInteiro = document.getElementById('chk_dia_inteiro').checked;
+            
+            showLoader("Travando a agenda...");
+            
+            if(isDiaInteiro) {
+                await fetchPost({acao:'criar_agendamento', data:data, hora:'DIA_INTEIRO', nome:'BLOQUEIO MIKAELY', status:'Bloqueado'});
+            } else {
+                let selecionados = document.querySelectorAll('.hora-check.selected');
+                if(selecionados.length === 0) { hideLoader(); return alert("Selecione pelo menos um horário na grade ou marque Dia Inteiro."); }
+                
+                // Envio sequencial para não sobrecarregar o Google Apps Script
+                for(let el of selecionados) {
+                    await fetchPost({acao:'criar_agendamento', data:data, hora:el.getAttribute('data-hora'), nome:'BLOQUEIO MIKAELY', status:'Bloqueado'});
+                }
+            }
+            hideLoader(); toast("Horários bloqueados com sucesso!"); fecharBsAcao(); escutarBanco();
+        }
+
+        // ================== HORÁRIOS PADRÃO (Início e Fim) ==================
         function montaGrade() {
             let c = document.getElementById('listaDiasConfig'); c.innerHTML='';
             diasSemana.forEach(d => {
                 let cfg = cache.configuracoes.find(x=>x.dia===d) || {ativo:'sim', inicio:'09:00', fim:'18:00'}; let chk = cfg.ativo === 'sim' ? 'checked' : '';
-                c.innerHTML += `<div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; margin-bottom:10px;"><label style="margin:0 0 10px 0;"><input type="checkbox" id="chk_${d}" ${chk}> <b>${d}</b></label><div style="display:flex; gap:10px;"><input type="time" id="ini_${d}" value="${cfg.inicio}"> <input type="time" id="fim_${d}" value="${cfg.fim}"></div></div>`;
+                c.innerHTML += `
+                <div style="background:rgba(255,255,255,0.05); padding:10px; border-radius:12px; margin-bottom:10px; border:1px solid rgba(212,175,55,0.2);">
+                    <label style="margin:0 0 10px 0;"><input type="checkbox" id="chk_${d}" ${chk} style="width:16px; height:16px; margin:0 5px 0 0;"> <b style="font-size:16px;">${d}</b></label>
+                    <div style="display:flex; gap:10px; align-items:center; color:#aaa; font-size:14px;">
+                        <span>das</span><input type="time" id="ini_${d}" value="${cfg.inicio}"> 
+                        <span>até</span><input type="time" id="fim_${d}" value="${cfg.fim}">
+                    </div>
+                </div>`;
             });
         }
         function salvarGradeHorarios() {
             let lista = []; diasSemana.forEach(d => { lista.push({dia: d, ativo: document.getElementById(`chk_${d}`).checked?'sim':'nao', inicio: document.getElementById(`ini_${d}`).value, fim: document.getElementById(`fim_${d}`).value, pausaInicio:'12:00', pausaFim:'13:00', intervalo:'30'}); });
-            disparar({acao:'salvar_config', dadosJson: JSON.stringify(lista)}, "Semana salva!"); fecharBs();
+            disparar({acao:'salvar_config', dadosJson: JSON.stringify(lista)}, "Semana salva!"); fecharBsAcao();
         }
 
+        // ================== SERVIÇOS ==================
         function mascaraMoeda(i) { let v = i.value.replace(/\D/g,''); v = (v/100).toFixed(2)+''; v = v.replace(".", ","); v = v.replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1.'); i.value = 'R$ '+v; }
         function montaSrv() {
             let ls = document.getElementById('listaServicosConfig'); ls.innerHTML = '';
