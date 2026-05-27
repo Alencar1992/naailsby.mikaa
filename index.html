@@ -4,12 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Mikaa Nails - Agendamento</title>
+
+    <link rel="manifest" href="data:application/manifest+json;charset=utf-8,%7B%22name%22%3A%22Mikaa%20Nails%22%2C%22short_name%22%3A%22Mikaa%22%2C%22description%22%3A%22Agenda%20e%20gest%C3%A3o%20de%20atendimentos%20%E2%80%94%20Mikaa%20Nails%22%2C%22start_url%22%3A%22%2F%22%2C%22display%22%3A%22standalone%22%2C%22background_color%22%3A%22%230a0a0a%22%2C%22theme_color%22%3A%22%23D4AF37%22%2C%22orientation%22%3A%22portrait%22%2C%22icons%22%3A%5B%7B%22src%22%3A%22%2Ficons%2Fmikaa_icon_192.png%22%2C%22sizes%22%3A%22192x192%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%2C%7B%22src%22%3A%22%2Ficons%2Fmikaa_icon_512.png%22%2C%22sizes%22%3A%22512x512%22%2C%22type%22%3A%22image%2Fpng%22%2C%22purpose%22%3A%22any%20maskable%22%7D%5D%7D">
+    <link rel="apple-touch-icon" sizes="180x180" href="/icons/mikaa_icon_180.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="/icons/mikaa_icon_180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="/icons/mikaa_icon_192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="/icons/mikaa_icon_512.png">
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Mikaa Nails">
+
     <style>
         :root { --primary: #d81b60; --gold: #D4AF37; --dark: #111; --text-dark: #334155; --success: #10b981; --danger: #ef4444; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: var(--dark); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* LOADER PREMIUM (Sucesso e Erro) */
+        /* LOADER PREMIUM */
         .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
         .loader-overlay.show { display: flex; opacity: 1; }
         .loader-content { background: rgba(20, 20, 20, 0.9); padding: 35px 40px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.3); display: flex; flex-direction: column; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -66,7 +77,6 @@
         label { font-weight: 600; font-size: 14px; color: var(--text-dark); display: block; margin: 16px 0 8px 0; }
         input[type="text"], input[type="tel"], select { width: 100%; height: 48px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 16px; background: #f8fafc; padding: 0 16px; outline: none; }
         
-        /* LISTA DE SERVIÇOS CATEGORIZADA */
         .lista-servicos { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; max-height: 250px; overflow-y: auto; }
         .cat-title { font-size: 13px; color: #888; font-weight: bold; margin: 15px 0 8px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .cat-title:first-child { margin-top: 0; }
@@ -74,8 +84,35 @@
         .servico-item input { width: 20px; height: 20px; margin-right: 12px; accent-color: var(--primary); }
         
         button.btn-principal { height: 52px; background: var(--primary); color: white; border: none; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; margin-top: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
+
+        /* ================= REDES SOCIAIS FOOTER (Correção) ================= */
+        .footer-redes {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: auto;
+            padding: 10px 0 25px 0;
+            width: 100%;
+            max-width: 420px;
+        }
+        .rede-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 16px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(212,175,55,0.3);
+            display: none; /* Escondido por padrão, o JS vai mostrar se existir link */
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+        }
+        .rede-icon:active { transform: scale(0.9); }
+        .rede-icon img { width: 26px; height: 26px; filter: brightness(0) invert(1); }
+        /* ==================================================================== */
         
-        .footer-dev { width: 100%; text-align: center; padding: 15px; font-size: 12px; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); margin-top: auto; }
+        .footer-dev { width: 100%; text-align: center; padding: 15px; font-size: 12px; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
     </style>
 </head>
 <body>
@@ -113,6 +150,18 @@
             <button class="btn-principal" onclick="enviarWhats()" style="background:#25D366;">📱 Confirmar via WhatsApp</button>
             <button class="btn-principal" style="background:#e2e8f0; color:#333;" onclick="location.reload()">Voltar ao Início</button>
         </div>
+
+        <div class="footer-redes" id="footerRedes">
+            <a id="linkInsta" class="rede-icon" href="#" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" alt="Instagram">
+            </a>
+            <a id="linkFace" class="rede-icon" href="#" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" alt="Facebook">
+            </a>
+            <a id="linkWhats" class="rede-icon" href="#" target="_blank">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp">
+            </a>
+        </div>
         <div class="footer-dev">Since @2026 - Dev Alencar - Version 1.0 Free Build 26.05.26 - BD GS.</div>
     </div>
 
@@ -135,7 +184,7 @@
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< URL DO APPS SCRIPT V6 AQUI
+        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; 
         
         const catalogoBase = [
             { cat: "💅 TRADICIONAIS", nome: "Mão", valor: 30.00 }, { cat: "💅 TRADICIONAIS", nome: "Pé", valor: 40.00 }, { cat: "💅 TRADICIONAIS", nome: "Mão + Pé", valor: 65.00 }, { cat: "💅 TRADICIONAIS", nome: "Esmaltação comum (mão)", valor: 15.00 }, { cat: "💅 TRADICIONAIS", nome: "Esmaltação comum (pé)", valor: 20.00 },
@@ -160,9 +209,38 @@
         let mesVisao = new Date();
         const diasSemanaNomes = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
 
+        // ================== ATUALIZAR REDES SOCIAIS ==================
+        function atualizarRedesRodape() {
+            if(!cache.geral) return;
+
+            let i = cache.geral.find(g => g.chave === 'insta');
+            let f = cache.geral.find(g => g.chave === 'face');
+            let w = cache.geral.find(g => g.chave === 'whatsapp');
+
+            let elI = document.getElementById('linkInsta');
+            let elF = document.getElementById('linkFace');
+            let elW = document.getElementById('linkWhats');
+
+            // Exibe apenas se houver valor configurado
+            if(i && i.valor) { elI.href = i.valor; elI.style.display = 'flex'; } else { elI.style.display = 'none'; }
+            if(f && f.valor) { elF.href = f.valor; elF.style.display = 'flex'; } else { elF.style.display = 'none'; }
+            if(w && w.valor) { elW.href = "https://wa.me/" + w.valor.replace(/\D/g, ''); elW.style.display = 'flex'; } else { elW.style.display = 'none'; }
+        }
+        // ==============================================================
+
         function buscarDados() {
             fetch(URL_API + "?nocache=" + new Date().getTime()).then(res => res.json()).then(dados => {
-                if (dados.etag !== cache.etag) { cache = dados; if(document.getElementById('appMain').style.display === 'flex') { montarCalendario(); if (document.getElementById('modalAgendamento').classList.contains('show')) { let dh = document.getElementById('dataEscolhidaISO').value; if(dh) recarregarHorarios(dh); } } }
+                if (dados.etag !== cache.etag) { 
+                    cache = dados; 
+                    atualizarRedesRodape(); // Atualiza os botões ao receber os dados
+                    if(document.getElementById('appMain').style.display === 'flex') { 
+                        montarCalendario(); 
+                        if (document.getElementById('modalAgendamento').classList.contains('show')) { 
+                            let dh = document.getElementById('dataEscolhidaISO').value; 
+                            if(dh) recarregarHorarios(dh); 
+                        } 
+                    } 
+                }
             }).catch(err => console.log(err));
         }
         buscarDados(); setInterval(buscarDados, 4000);
@@ -253,46 +331,21 @@
             }).catch(e => { showLoaderError("Erro na ligação!"); });
         }
 
+        // ================== ENVIAR MENSAGEM WHATSAPP ==================
         function enviarWhats() {
-            let wp = cache.geral.find(g=>g.chave==='whatsapp'); let nm = wp ? wp.valor.replace(/\D/g,'') : "5511977729557";
-            let txt = `Olá Mikaely! Sou ${document.getElementById('resNome').innerText}. Agendei para o dia ${document.getElementById('resData').innerText} às ${document.getElementById('resHora').innerText}.`;
+            let wp = cache.geral.find(g=>g.chave==='whatsapp'); 
+            let nm = wp ? wp.valor.replace(/\D/g,'') : "5511977729557";
+            
+            let nome = document.getElementById('resNome').innerText;
+            let data = document.getElementById('resData').innerText;
+            let hora = document.getElementById('resHora').innerText;
+            let total = document.getElementById('resTotal').innerText;
+            let servicos = Array.from(document.querySelectorAll('#boxServicos input:checked')).map(c=>c.value).join(', ');
+            
+            let txt = `Olá Mikaely! 💅\nSou *${nome}*.\n\n📅 Agendei para o dia *${data}* às *${hora}*.\n✨ Serviços: *${servicos}*\n💰 Valor Total: *R$ ${total}*\n\n!`;
+            
             window.open(`https://wa.me/${nm}?text=${encodeURIComponent(txt)}`, '_blank');
         }
     </script>
-    <div id="footerRedes" style="margin-top:40px; padding:20px; display:flex; justify-content:center; gap:25px; border-top: 1px solid rgba(255,255,255,0.1);">
-    <a id="linkInsta" href="#" target="_blank" style="text-decoration:none;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/e/e7/Instagram_logo_2016.svg" width="30" height="30" style="filter: brightness(0) invert(1);">
-    </a>
-    <a id="linkFace" href="#" target="_blank" style="text-decoration:none;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b8/2021_Facebook_icon.svg" width="30" height="30" style="filter: brightness(0) invert(1);">
-    </a>
-    <a id="linkWhats" href="#" target="_blank" style="text-decoration:none;">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" width="30" height="30">
-    </a>
-</div>
-
-<script>
-    // Função para atualizar os links no rodapé (chamar dentro da sua função buscarDados após atualizar o cache)
-    function atualizarRedesRodape() {
-        const redes = {
-            insta: cache.geral.find(g => g.chave === 'insta'),
-            face: cache.geral.find(g => g.chave === 'face'),
-            whats: cache.geral.find(g => g.chave === 'whatsapp')
-        };
-
-        if (redes.insta) document.getElementById('linkInsta').href = redes.insta.valor;
-        if (redes.face) document.getElementById('linkFace').href = redes.face.valor;
-        if (redes.whats) document.getElementById('linkWhats').href = "https://wa.me/" + redes.whats.valor.replace(/\D/g, '');
-    }
-
-    // Adicione a chamada 'atualizarRedesRodape()' dentro da sua função buscarDados
-    // Exemplo:
-    // ...
-    // if (dados.etag !== cache.etag) {
-    //     cache = dados;
-    //     atualizarRedesRodape(); // Adicione esta linha
-    //     montarCalendario();
-    // ...
-</script>
 </body>
 </html>
