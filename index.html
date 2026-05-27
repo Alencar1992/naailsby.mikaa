@@ -9,22 +9,20 @@
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: var(--dark); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* NOVO LOADER PREMIUM (Sucesso e Erro) */
+        /* LOADER PREMIUM (Sucesso e Erro) */
         .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
         .loader-overlay.show { display: flex; opacity: 1; }
         .loader-content { background: rgba(20, 20, 20, 0.9); padding: 35px 40px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.3); display: flex; flex-direction: column; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         .loader-overlay.show .loader-content { transform: scale(1); }
-        
         .spinner { width: 55px; height: 55px; border: 4px solid rgba(212,175,55,0.1); border-left-color: var(--gold); border-radius: 50%; animation: spin 1s linear infinite; }
         .status-icon { width: 55px; height: 55px; border-radius: 50%; display: none; justify-content: center; align-items: center; font-size: 30px; font-weight: bold; color: white; animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .status-icon.success { background: var(--success); box-shadow: 0 0 20px rgba(16,185,129,0.4); display: none; }
-        .status-icon.error { background: var(--danger); box-shadow: 0 0 20px rgba(239,68,68,0.4); display: none; }
-        
-        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 1px; font-size: 15px; font-family: -apple-system, sans-serif; text-align: center; }
+        .status-icon.success { background: var(--success); box-shadow: 0 0 20px rgba(16,185,129,0.4); }
+        .status-icon.error { background: var(--danger); box-shadow: 0 0 20px rgba(239,68,68,0.4); }
+        .loader-text { margin-top: 20px; color: var(--gold); font-weight: bold; letter-spacing: 1px; font-size: 15px; text-align: center; }
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* SPLASH SCREEN CLIENTE */
+        /* SPLASH SCREEN */
         #splashClient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; background: url('mika.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: opacity 0.5s; }
         .splash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.8) 100%); pointer-events: none; }
         .glow { position: absolute; top:-50px; right:-50px; width:200px; height:200px; background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%); }
@@ -68,9 +66,12 @@
         label { font-weight: 600; font-size: 14px; color: var(--text-dark); display: block; margin: 16px 0 8px 0; }
         input[type="text"], input[type="tel"], select { width: 100%; height: 48px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 16px; background: #f8fafc; padding: 0 16px; outline: none; }
         
-        .lista-servicos { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; max-height: 180px; overflow-y: auto; }
-        .servico-item { display: flex; align-items: center; margin-bottom: 12px; font-size: 15px; color: var(--text-dark); background: #fff; padding: 8px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .servico-item input { width: 24px; height: 24px; margin-right: 12px; accent-color: var(--primary); }
+        /* LISTA DE SERVIÇOS CATEGORIZADA */
+        .lista-servicos { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; max-height: 250px; overflow-y: auto; }
+        .cat-title { font-size: 13px; color: #888; font-weight: bold; margin: 15px 0 8px 0; border-bottom: 1px solid #e2e8f0; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .cat-title:first-child { margin-top: 0; }
+        .servico-item { display: flex; align-items: center; margin-bottom: 8px; font-size: 15px; color: var(--text-dark); background: #fff; padding: 10px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); cursor: pointer; }
+        .servico-item input { width: 20px; height: 20px; margin-right: 12px; accent-color: var(--primary); }
         
         button.btn-principal { height: 52px; background: var(--primary); color: white; border: none; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; margin-top: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; }
         
@@ -89,14 +90,8 @@
     </div>
 
     <div id="splashClient">
-        <div class="splash-overlay"></div>
-        <div class="glow"></div>
-        <div id="starContainer"></div>
-        <div class="logo-box">
-            <div class="ring-spin"></div>
-            <div class="ring-glow"><h1>Mikaa</h1></div>
-            <div class="subtitle">NAIL DESIGNER</div>
-        </div>
+        <div class="splash-overlay"></div><div class="glow"></div><div id="starContainer"></div>
+        <div class="logo-box"><div class="ring-spin"></div><div class="ring-glow"><h1>Mikaa</h1></div><div class="subtitle">NAIL DESIGNER</div></div>
         <button class="btn-agendar" onclick="entrarApp()">Agendar Agora</button>
     </div>
 
@@ -104,11 +99,7 @@
         <div class="card" id="telaCalendario">
             <h1 style="color:var(--primary); text-align:center; margin:0 0 5px 0;">Mikaely Nails 💅</h1>
             <p style="text-align:center; color:#555; margin:0 0 24px 0;">Selecione o dia desejado na agenda</p>
-            <div class="header-mes">
-                <div class="nav-mes" onclick="mudarMes(-1)">❮</div>
-                <span id="mesAtualStr">A procurar...</span>
-                <div class="nav-mes" onclick="mudarMes(1)">❯</div>
-            </div>
+            <div class="header-mes"><div class="nav-mes" onclick="mudarMes(-1)">❮</div><span id="mesAtualStr">A procurar...</span><div class="nav-mes" onclick="mudarMes(1)">❯</div></div>
             <div class="dias-semana"><div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div></div>
             <div class="grid-calendario" id="gridDias"></div>
         </div>
@@ -116,25 +107,18 @@
         <div class="card" id="cardSucesso" style="display:none; text-align:center;">
             <h2 style="color: #25D366; margin-top:0;">✅ Reservado!</h2>
             <div style="background: rgba(255,255,255,0.5); padding: 16px; border-radius: 12px; margin-bottom: 24px; text-align: left; font-size: 15px; border: 1px solid #e2e8f0;">
-                <strong>Nome:</strong> <span id="resNome"></span><br><br>
-                <strong>Data:</strong> <span id="resData"></span><br><br>
-                <strong>Hora:</strong> <span id="resHora"></span><br><br>
+                <strong>Nome:</strong> <span id="resNome"></span><br><br><strong>Data:</strong> <span id="resData"></span><br><br><strong>Hora:</strong> <span id="resHora"></span><br><br>
                 <strong style="color: var(--primary); font-size: 18px;">Total: R$ <span id="resTotal"></span></strong>
             </div>
             <button class="btn-principal" onclick="enviarWhats()" style="background:#25D366;">📱 Confirmar via WhatsApp</button>
             <button class="btn-principal" style="background:#e2e8f0; color:#333;" onclick="location.reload()">Voltar ao Início</button>
         </div>
-
         <div class="footer-dev">Since @2026 - Dev Alencar - Version 1.0 Free Build 26.05.26 - BD GS.</div>
     </div>
 
     <div class="bottom-sheet-overlay" id="modalAgendamento" onclick="fecharModalClickFora(event)">
         <div class="bottom-sheet">
-            <div class="bs-header">
-                <button class="btn-back" onclick="fecharModal()">❮ Voltar</button>
-                <h3><span id="dataSelecionadaStr"></span></h3>
-                <div class="bs-spacer"></div>
-            </div>
+            <div class="bs-header"><button class="btn-back" onclick="fecharModal()">❮ Voltar</button><h3><span id="dataSelecionadaStr"></span></h3><div class="bs-spacer"></div></div>
             <input type="hidden" id="dataEscolhidaISO">
             
             <label>Nome Completo:</label><input type="text" id="nomeCliente" placeholder="Ex: Maria Silva">
@@ -144,58 +128,33 @@
             <div class="lista-servicos" id="boxServicos"></div>
             <div style="font-weight:800; color:var(--primary); text-align:right; margin-top:12px; font-size:18px;">Total: R$ <span id="valorCalculado">0,00</span></div>
 
-            <label>Horários Livres (Tempo Real):</label>
+            <label>Horários Livres:</label>
             <select id="horaEscolhida"></select>
-            
             <button class="btn-principal" onclick="salvarAgendamento()">Confirmar Agendamento</button>
         </div>
     </div>
 
     <script>
-        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< URL DO APPS SCRIPT V5 AQUI
+        const URL_API = "https://script.google.com/macros/s/AKfycbwD0yJLhedjvUhurv_28YxH_65s96E62tW6cxfvYECI2Fr6ZE4sIaBFmzoUcnpFkaTO/exec"; // <<< URL DO APPS SCRIPT V6 AQUI
         
-        // --- FUNÇÕES DO LOADER AVANÇADO ---
-        function showLoader(msg = "A processar...") { 
-            document.getElementById('loaderText').innerText = msg;
-            document.getElementById('loaderText').style.color = "var(--gold)";
-            document.getElementById('loaderSpinner').style.display = 'block';
-            document.getElementById('loaderSuccess').style.display = 'none';
-            document.getElementById('loaderError').style.display = 'none';
-            document.getElementById('loader').classList.add('show'); 
-        }
-        function showLoaderSuccess(msg = "Concluído!", autoClose = true) {
-            document.getElementById('loaderSpinner').style.display = 'none';
-            document.getElementById('loaderSuccess').style.display = 'flex';
-            document.getElementById('loaderText').innerText = msg;
-            document.getElementById('loaderText').style.color = "var(--success)";
-            if(autoClose) setTimeout(hideLoader, 2000);
-        }
-        function showLoaderError(msg = "Erro!", autoClose = true) {
-            document.getElementById('loaderSpinner').style.display = 'none';
-            document.getElementById('loaderError').style.display = 'flex';
-            document.getElementById('loaderText').innerText = msg;
-            document.getElementById('loaderText').style.color = "var(--danger)";
-            if(autoClose) setTimeout(hideLoader, 3000);
-        }
-        function hideLoader() { document.getElementById('loader').classList.remove('show'); }
-        // ----------------------------------
+        const catalogoBase = [
+            { cat: "💅 TRADICIONAIS", nome: "Mão", valor: 30.00 }, { cat: "💅 TRADICIONAIS", nome: "Pé", valor: 40.00 }, { cat: "💅 TRADICIONAIS", nome: "Mão + Pé", valor: 65.00 }, { cat: "💅 TRADICIONAIS", nome: "Esmaltação comum (mão)", valor: 15.00 }, { cat: "💅 TRADICIONAIS", nome: "Esmaltação comum (pé)", valor: 20.00 },
+            { cat: "💎 ALONGAMENTOS", nome: "Blindagem", valor: 60.00 }, { cat: "💎 ALONGAMENTOS", nome: "Banho em gel", valor: 90.00 }, { cat: "💎 ALONGAMENTOS", nome: "Esmaltação em gel (mão)", valor: 70.00 }, { cat: "💎 ALONGAMENTOS", nome: "Esmaltação em gel (pé)", valor: 80.00 }, { cat: "💎 ALONGAMENTOS", nome: "Molde F1", valor: 130.00 }, { cat: "💎 ALONGAMENTOS", nome: "Gel na tips", valor: 150.00 }, { cat: "💎 ALONGAMENTOS", nome: "Poli gel", valor: 120.00 },
+            { cat: "🔧 MANUTENÇÃO", nome: "Manutenção Molde F1", valor: 80.00 }, { cat: "🔧 MANUTENÇÃO", nome: "Manutenção Poli gel", valor: 70.00 }, { cat: "🔧 MANUTENÇÃO", nome: "Manutenção Gel na tips", valor: 100.00 },
+            { cat: "🔄 OUTROS SERVIÇOS", nome: "Reposição de unha", valor: 10.00 }, { cat: "🔄 OUTROS SERVIÇOS", nome: "Manutenção de outra profissional", valor: 100.00 }, { cat: "🔄 OUTROS SERVIÇOS", nome: "Remoção de alongamento", valor: 70.00 }, { cat: "🔄 OUTROS SERVIÇOS", nome: "Remoção de esmaltação em gel", valor: 30.00 }, { cat: "🔄 OUTROS SERVIÇOS", nome: "Plástica dos pés", valor: 60.00 },
+            { cat: "👁 CÍLIOS", nome: "Tufinhos", valor: 30.00 }, { cat: "👁 CÍLIOS", nome: "Tufinhos 2", valor: 40.00 }
+        ];
 
-        // Estrelas da Splash
+        // --- FUNÇÕES DO LOADER ---
+        function showLoader(msg="A processar..."){ document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--gold)"; document.getElementById('loaderSpinner').style.display='block'; document.getElementById('loaderSuccess').style.display='none'; document.getElementById('loaderError').style.display='none'; document.getElementById('loader').classList.add('show'); }
+        function showLoaderSuccess(msg="Concluído!"){ document.getElementById('loaderSpinner').style.display='none'; document.getElementById('loaderSuccess').style.display='flex'; document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--success)"; setTimeout(hideLoader, 2000); }
+        function showLoaderError(msg="Erro!"){ document.getElementById('loaderSpinner').style.display='none'; document.getElementById('loaderError').style.display='flex'; document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--danger)"; setTimeout(hideLoader, 3000); }
+        function hideLoader(){ document.getElementById('loader').classList.remove('show'); }
+
         const sc = document.getElementById('starContainer');
-        for(let i=0; i<15; i++) {
-            let s = document.createElement('div'); s.className = 'star';
-            s.style.top = Math.random()*50 + 'vh'; s.style.left = Math.random()*100 + 'vw';
-            s.style.animationDelay = (Math.random()*2) + 's'; sc.appendChild(s);
-        }
+        for(let i=0; i<15; i++) { let s=document.createElement('div'); s.className='star'; s.style.top=Math.random()*50+'vh'; s.style.left=Math.random()*100+'vw'; s.style.animationDelay=(Math.random()*2)+'s'; sc.appendChild(s); }
 
-        function entrarApp() {
-            document.getElementById('splashClient').style.opacity = '0';
-            setTimeout(() => {
-                document.getElementById('splashClient').style.display = 'none';
-                let am = document.getElementById('appMain');
-                am.style.display = 'flex'; setTimeout(()=> am.style.opacity = '1', 50);
-            }, 500);
-        }
+        function entrarApp() { document.getElementById('splashClient').style.opacity = '0'; setTimeout(() => { document.getElementById('splashClient').style.display = 'none'; let am = document.getElementById('appMain'); am.style.display = 'flex'; setTimeout(()=> am.style.opacity = '1', 50); }, 500); }
 
         let cache = { agendamentos: [], servicos: [], configuracoes: [], geral: [], etag: "" };
         let mesVisao = new Date();
@@ -203,16 +162,7 @@
 
         function buscarDados() {
             fetch(URL_API + "?nocache=" + new Date().getTime()).then(res => res.json()).then(dados => {
-                if (dados.etag !== cache.etag) {
-                    cache = dados;
-                    if(document.getElementById('appMain').style.display === 'flex') {
-                        montarCalendario();
-                        if (document.getElementById('modalAgendamento').classList.contains('show')) {
-                            let dh = document.getElementById('dataEscolhidaISO').value;
-                            if(dh) recarregarHorarios(dh);
-                        }
-                    }
-                }
+                if (dados.etag !== cache.etag) { cache = dados; if(document.getElementById('appMain').style.display === 'flex') { montarCalendario(); if (document.getElementById('modalAgendamento').classList.contains('show')) { let dh = document.getElementById('dataEscolhidaISO').value; if(dh) recarregarHorarios(dh); } } }
             }).catch(err => console.log(err));
         }
         buscarDados(); setInterval(buscarDados, 4000);
@@ -224,21 +174,13 @@
             document.getElementById('mesAtualStr').innerText = mesVisao.toLocaleString('pt-PT', {month:'long'}) + " " + ano;
             let pDia = new Date(ano, mes, 1).getDay(); let dMes = new Date(ano, mes + 1, 0).getDate();
             let hoje = new Date(); hoje.setHours(0,0,0,0);
-            
             for(let i=0; i<pDia; i++) grid.innerHTML += `<div class="dia vazio"></div>`;
             for(let dia=1; dia<=dMes; dia++) {
                 let dtI = new Date(ano, mes, dia); let nmDia = diasSemanaNomes[dtI.getDay()];
                 let dtIso = `${ano}-${String(mes+1).padStart(2,'0')}-${String(dia).padStart(2,'0')}`;
-                
                 let div = document.createElement('div'); div.innerText = dia;
-                let cfg = cache.configuracoes.find(c => c.dia === nmDia);
-                let bloq = cache.agendamentos.some(a => a.data === dtIso && a.hora === 'DIA_INTEIRO' && a.status === 'Bloqueado');
-                
-                if(dtI < hoje || (cfg && cfg.ativo === 'nao') || bloq) {
-                    div.className = 'dia bloqueado';
-                } else {
-                    div.className = 'dia'; div.onclick = () => abrirModal(dtIso, nmDia, dia, mes, ano);
-                }
+                let cfg = cache.configuracoes.find(c => c.dia === nmDia); let bloq = cache.agendamentos.some(a => a.data === dtIso && a.hora === 'DIA_INTEIRO' && a.status === 'Bloqueado');
+                if(dtI < hoje || (cfg && cfg.ativo === 'nao') || bloq) { div.className = 'dia bloqueado'; } else { div.className = 'dia'; div.onclick = () => abrirModal(dtIso, nmDia, dia, mes, ano); }
                 grid.appendChild(div);
             }
         }
@@ -248,10 +190,23 @@
             document.getElementById('dataSelecionadaStr').innerText = `${String(dia).padStart(2,'0')}/${String(mes+1).padStart(2,'0')}/${ano}`;
             
             let bx = document.getElementById('boxServicos'); bx.innerHTML = '';
-            cache.servicos.filter(s => s.status === 'ativo').forEach(s => {
-                let valF = parseFloat(s.valor).toFixed(2).replace('.',',');
-                bx.innerHTML += `<label class="servico-item"><input type="checkbox" value="${s.nome}" data-preco="${s.valor}" onchange="calcTotal()"> ${s.nome} <span style="margin-left:auto; color:#888;">R$ ${valF}</span></label>`;
+            let catAtual = "";
+            
+            catalogoBase.forEach(item => {
+                let dbItem = cache.servicos.find(s => s.nome === item.nome);
+                let preco = dbItem ? dbItem.valor : item.valor;
+                let status = dbItem ? dbItem.status : 'ativo';
+                
+                if(status === 'ativo') {
+                    if(catAtual !== item.cat) {
+                        catAtual = item.cat;
+                        bx.innerHTML += `<div class="cat-title">${catAtual}</div>`;
+                    }
+                    let valF = parseFloat(preco).toFixed(2).replace('.',',');
+                    bx.innerHTML += `<label class="servico-item"><input type="checkbox" value="${item.nome}" data-preco="${preco}" onchange="calcTotal()"> ${item.nome} <span style="margin-left:auto; color:#888;">R$ ${valF}</span></label>`;
+                }
             });
+            
             calcTotal(); recarregarHorarios(iso, nmdia);
             document.getElementById('modalAgendamento').classList.add('show');
         }
@@ -262,25 +217,14 @@
             let ocupados = cache.agendamentos.filter(a => a.data === iso && a.status !== 'Cancelado').map(a => a.hora);
             let hr = document.getElementById('horaEscolhida'); hr.innerHTML = '';
             let hi = cvt(cfg.inicio); let hf = cvt(cfg.fim); let pi = cvt(cfg.pausaInicio); let pf = cvt(cfg.pausaFim); let int = parseInt(cfg.intervalo)||30;
-            
             let temVaga = false;
-            while(hi < hf) {
-                if(hi < pi || hi >= pf) {
-                    let st = cvts(hi);
-                    if(!ocupados.includes(st)) { hr.innerHTML += `<option value="${st}">${st}</option>`; temVaga = true; }
-                }
-                hi += int;
-            }
+            while(hi < hf) { if(hi < pi || hi >= pf) { let st = cvts(hi); if(!ocupados.includes(st)) { hr.innerHTML += `<option value="${st}">${st}</option>`; temVaga = true; } } hi += int; }
             if(!temVaga) { hr.innerHTML = '<option value="">Sem horários disponíveis</option>'; }
         }
         function cvt(s) { if(!s)return 0; let[h,m]=s.split(':').map(Number); return (h*60)+m; }
         function cvts(m) { return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`; }
 
-        function calcTotal() {
-            let t = 0; document.querySelectorAll('#boxServicos input:checked').forEach(c => t += parseFloat(c.getAttribute('data-preco')));
-            document.getElementById('valorCalculado').innerText = t.toFixed(2).replace('.',','); return t;
-        }
-        
+        function calcTotal() { let t=0; document.querySelectorAll('#boxServicos input:checked').forEach(c => t += parseFloat(c.getAttribute('data-preco'))); document.getElementById('valorCalculado').innerText = t.toFixed(2).replace('.',','); return t; }
         function fecharModal() { document.getElementById('modalAgendamento').classList.remove('show'); }
         function fecharModalClickFora(e) { if(e.target.id === 'modalAgendamento') fecharModal(); }
 
@@ -288,12 +232,10 @@
             const data = document.getElementById('dataEscolhidaISO').value; const hora = document.getElementById('horaEscolhida').value;
             const nome = document.getElementById('nomeCliente').value; const whats = document.getElementById('whatsCliente').value;
             let sel = Array.from(document.querySelectorAll('#boxServicos input:checked')).map(c=>c.value).join(', '); let tot = calcTotal();
-            
             if(!nome || !whats) return alert("Preencha nome e WhatsApp"); if(!sel) return alert("Escolha um serviço"); if(!hora) return alert("Horário inválido");
 
             showLoader("A reservar o horário...");
-            const p = new URLSearchParams(); p.append('acao', 'criar_agendamento'); p.append('data', data); p.append('hora', hora); p.append('nome', nome);
-            p.append('whatsapp', whats); p.append('servicos', sel); p.append('total', tot); p.append('status', 'Agendado'); p.append('pagamento', 'Pendente');
+            const p = new URLSearchParams(); p.append('acao', 'criar_agendamento'); p.append('data', data); p.append('hora', hora); p.append('nome', nome); p.append('whatsapp', whats); p.append('servicos', sel); p.append('total', tot); p.append('status', 'Agendado'); p.append('pagamento', 'Pendente');
 
             fetch(URL_API, { method: 'POST', mode: 'no-cors', body: p }).then(() => {
                 setTimeout(() => {
@@ -305,15 +247,10 @@
                                 document.getElementById('resNome').innerText = nome; document.getElementById('resData').innerText = data.split('-').reverse().join('/'); document.getElementById('resHora').innerText = hora; document.getElementById('resTotal').innerText = tot.toFixed(2).replace('.',',');
                                 fecharModal(); document.getElementById('telaCalendario').style.display='none'; document.getElementById('cardSucesso').style.display='block';
                             }, 1500);
-                        } else {
-                            showLoaderError("Horário já ocupado!");
-                            recarregarHorarios(data);
-                        }
+                        } else { showLoaderError("Horário já ocupado!"); recarregarHorarios(data); }
                     });
                 }, 1000);
-            }).catch(e => {
-                showLoaderError("Erro na ligação!");
-            });
+            }).catch(e => { showLoaderError("Erro na ligação!"); });
         }
 
         function enviarWhats() {
