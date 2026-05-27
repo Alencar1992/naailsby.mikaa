@@ -319,13 +319,21 @@
             });
         }
 
-        function enviarWhats() {
+       function enviarWhats() {
             const n = document.getElementById('resNome').innerText; 
             const d = document.getElementById('resData').innerText; 
             const h = document.getElementById('resHora').innerText;
             const t = document.getElementById('resTotal').innerText;
-            const txt = `Olá! Sou ${n}. Acabei de agendar no app para o dia ${d} às ${h}. Total previsto: R$ ${t}. Gostaria de confirmar!`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(txt)}`, '_blank');
+            
+            // O texto que a Mikaely vai receber
+            const txt = `Olá Mikaely! Sou ${n}. Acabei de agendar no aplicativo para o dia ${d} às ${h}. Total previsto: R$ ${t}. Gostaria de confirmar meu horário!`;
+            
+            // COLOQUE O NÚMERO DA MIKAELY AQUI (Sem espaços ou traços, ex: 5511988887777)
+            const numeroMikaely = "5511977729557"; 
+            
+            // Abre o WhatsApp enviando a mensagem direto para ela
+            window.open(`https://wa.me/${numeroMikaely}?text=${encodeURIComponent(txt)}`, '_blank');
+        }
         }
 
         function voltarInicio() {
