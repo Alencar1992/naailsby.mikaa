@@ -16,12 +16,10 @@
     <meta name="apple-mobile-web-app-title" content="Mikaa Nails">
 
     <style>
-        /* Variáveis de Paleta de Cores do Sistema */
         :root { --primary: #d81b60; --gold: #D4AF37; --dark: #111; --text-dark: #334155; --success: #10b981; --danger: #ef4444; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: -apple-system, sans-serif; margin: 0; padding: 0; background: var(--dark); color: #fff; min-height: 100vh; overflow-x: hidden; }
 
-        /* LOADER PREMIUM (Tela de Carregamento Animada) */
         .loader-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 99999; display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); opacity: 0; transition: opacity 0.3s ease; }
         .loader-overlay.show { display: flex; opacity: 1; }
         .loader-content { background: rgba(20, 20, 20, 0.9); padding: 35px 40px; border-radius: 24px; border: 1px solid rgba(212,175,55,0.3); display: flex; flex-direction: column; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.5); transform: scale(0.9); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
@@ -34,7 +32,6 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-        /* SPLASH SCREEN (Tela de Boas-Vindas Visual) */
         #splashClient { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 9000; background: url('mika.png') no-repeat center center; background-size: cover; display: flex; flex-direction: column; justify-content: space-between; align-items: center; transition: opacity 0.5s; }
         .splash-overlay { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.8) 100%); pointer-events: none; }
         .glow { position: absolute; top:-50px; right:-50px; width:200px; height:200px; background: radial-gradient(circle, rgba(212,175,55,0.4) 0%, transparent 70%); }
@@ -50,12 +47,10 @@
 
         .btn-agendar { position: relative; z-index: 2; margin-bottom: env(safe-area-inset-bottom, 30px); width: 90%; padding: 18px; border-radius: 18px; cursor: pointer; background: rgba(255,255,255,0.07); border: 1px solid rgba(212,175,55,0.40); color: rgba(255,255,255,0.9); font-size: 14px; letter-spacing: 2px; text-transform: uppercase; backdrop-filter: blur(14px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.08); font-family: Georgia, serif; }
 
-        /* APP PRINCIPAL (Contêiner Centralizado Mobile-First) */
         #appMain { display: none; opacity: 0; transition: opacity 0.4s; background: url('mika.png') no-repeat center center fixed; background-size: cover; min-height: 100vh; padding: 20px; padding-bottom: env(safe-area-inset-bottom); display: flex; flex-direction: column; align-items: center; }
         
         .card { background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.5); padding: 24px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); width: 100%; max-width: 420px; border-top: 6px solid var(--primary); margin-bottom: 20px; color: var(--text-dark); }
         
-        /* ESTILOS DO CALENDÁRIO DINÂMICO */
         .header-mes { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; color: var(--primary); font-size: 18px; text-transform: uppercase; }
         .nav-mes { cursor: pointer; padding: 8px 16px; background: rgba(216, 27, 96, 0.1); border-radius: 12px; transition: 0.2s; }
         .dias-semana { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-size: 13px; color: #666; font-weight: bold; margin-bottom: 8px; }
@@ -65,7 +60,6 @@
         .dia.vazio { background: transparent; border: none; cursor: default; }
         .dia.bloqueado { background: rgba(241, 245, 249, 0.7); border-color: #e2e8f0; color: #cbd5e1; cursor: not-allowed; text-decoration: line-through; }
         
-        /* ESTILOS DO BOTTOM SHEET (Janela Deslizante de Opções) */
         .bottom-sheet-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; display: flex; align-items: flex-end; justify-content: center;}
         .bottom-sheet-overlay.show { opacity: 1; pointer-events: auto; }
         .bottom-sheet { background: #ffffff; border-radius: 24px 24px 0 0; width: 100%; max-width: 600px; padding: 20px 20px calc(24px + env(safe-area-inset-bottom)); transform: translateY(100%); transition: transform 0.3s; max-height: 90vh; overflow-y: auto; }
@@ -76,7 +70,6 @@
         .bs-header h3 { margin: 0; color: var(--primary); font-size: 18px; text-align: center; flex-grow: 1; }
         .bs-spacer { width: 70px; } 
         
-        /* FORMULÁRIOS DE ENTRADA DO CLIENTE */
         label { font-weight: 600; font-size: 14px; color: var(--text-dark); display: block; margin: 16px 0 8px 0; }
         input[type="text"], input[type="tel"], select { width: 100%; height: 48px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 16px; background: #f8fafc; padding: 0 16px; outline: none; transition: 0.3s; }
         input[type="text"]:focus, input[type="tel"]:focus, select:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(216, 27, 96, 0.1); }
@@ -90,52 +83,18 @@
         button.btn-principal { height: 52px; background: var(--primary); color: white; border: none; border-radius: 12px; width: 100%; font-weight: bold; font-size: 16px; margin-top: 24px; cursor: pointer; display: flex; justify-content: center; align-items: center; transition: 0.3s; }
         button.btn-principal:hover { filter: brightness(1.1); }
 
-        /* SISTEMA DE CARDS DE PAGAMENTO */
-        .pay-methods-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .pay-method-card {
-            background: #f8fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 14px 10px;
-            text-align: center;
-            font-weight: bold;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            font-size: 14px;
-        }
-        .pay-method-card.active {
-            border-color: var(--primary);
-            background: rgba(216, 27, 96, 0.05);
-            color: var(--primary);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(216, 27, 96, 0.15);
-        }
-        .pix-box {
-            background: #f0fdf4;
-            border: 1px solid #bbf7d0;
-            border-radius: 12px;
-            padding: 16px;
-            margin-top: 15px;
-            text-align: center;
-            animation: popIn 0.3s ease;
-        }
+        .pay-methods-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+        .pay-method-card { background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 12px; padding: 14px 10px; text-align: center; font-weight: bold; color: var(--text-dark); cursor: pointer; transition: all 0.3s ease; font-size: 14px; }
+        .pay-method-card.active { border-color: var(--primary); background: rgba(216, 27, 96, 0.05); color: var(--primary); transform: translateY(-2px); box-shadow: 0 4px 12px rgba(216, 27, 96, 0.15); }
+        .pix-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 12px; padding: 16px; margin-top: 15px; text-align: center; animation: popIn 0.3s ease; }
         .pix-box p { margin: 0 0 10px 0; font-size: 13px; color: #166534; }
         .pix-key-display { background: #fff; border: 1px dashed #22c55e; padding: 10px; border-radius: 8px; font-weight: bold; font-family: monospace; color: #15803d; margin-bottom: 12px; word-break: break-all; }
         .btn-copy { background: #22c55e; color: white; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: 0.3s; }
         .btn-copy:active { transform: scale(0.95); }
 
-        /* BARRA DE REDES SOCIAIS NO RODAPÉ */
         .footer-redes { display: flex; justify-content: center; gap: 16px; margin-top: auto; padding: 10px 0 25px 0; width: 100%; max-width: 420px; }
         .rede-icon { width: 50px; height: 50px; border-radius: 16px; background: rgba(255,255,255,0.08); border: 1px solid rgba(212,175,55,0.3); display: none; justify-content: center; align-items: center; text-decoration: none; backdrop-filter: blur(8px); transition: 0.3s; }
         .rede-icon:active { transform: scale(0.9); }
-        
-        /* Filtro que deixa as imagens brancas. Delete a linha abaixo se quiser os ícones coloridos originais */
         .rede-icon img { width: 26px; height: 26px; filter: brightness(0) invert(1); }
         
         .footer-dev { width: 100%; text-align: center; padding: 15px; font-size: 12px; color: #ffffff; text-shadow: 1px 1px 3px rgba(0,0,0,0.9); }
@@ -182,13 +141,13 @@
 
         <div class="footer-redes" id="footerRedes">
             <a id="linkInsta" class="rede-icon" href="#" target="_blank">
-                <img src="Instagram_logo_2016 (1).png" alt="Instagram">
+                <img src="instagram.png" alt="Instagram">
             </a>
             <a id="linkFace" class="rede-icon" href="#" target="_blank">
-                <img src="2021_Facebook_icon.png" alt="Facebook">
+                <img src="facebook.png" alt="Facebook">
             </a>
             <a id="linkWhats" class="rede-icon" href="#" target="_blank">
-                <img src="WhatsApp.png" alt="WhatsApp">
+                <img src="whatsapp.png" alt="WhatsApp">
             </a>
         </div>
         <div class="footer-dev">Since @2026 - Dev Alencar - Version 1.1 Free Build 28.05.26 - BD GS.</div>
@@ -239,19 +198,16 @@
             { cat: "👁 CÍLIOS", nome: "Tufinhos", valor: 30.00 }, { cat: "👁 CÍLIOS", nome: "Tufinhos 2", valor: 40.00 }
         ];
 
-        /* BLOCO DE INTERFACE: Controle dos Loaders de Carregamento */
         function showLoader(msg="Carregando Aguarde......"){ document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--gold)"; document.getElementById('loaderSpinner').style.display='block'; document.getElementById('loaderSuccess').style.display='none'; document.getElementById('loaderError').style.display='none'; document.getElementById('loader').classList.add('show'); }
         function showLoaderSuccess(msg="Concluído!"){ document.getElementById('loaderSpinner').style.display='none'; document.getElementById('loaderSuccess').style.display='flex'; document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--success)"; setTimeout(hideLoader, 2000); }
         function showLoaderError(msg="Erro!"){ document.getElementById('loaderSpinner').style.display='none'; document.getElementById('loaderError').style.display='flex'; document.getElementById('loaderText').innerText=msg; document.getElementById('loaderText').style.color="var(--danger)"; setTimeout(hideLoader, 3000); }
         function hideLoader(){ document.getElementById('loader').classList.remove('show'); }
 
-        // Animação de estrelas em background na Splash Screen
         const sc = document.getElementById('starContainer');
         for(let i=0; i<15; i++) { let s=document.createElement('div'); s.className='star'; s.style.top=Math.random()*50+'vh'; s.style.left=Math.random()*100+'vw'; s.style.animationDelay=(Math.random()*2)+'s'; sc.appendChild(s); }
 
         function entrarApp() { document.getElementById('splashClient').style.opacity = '0'; setTimeout(() => { document.getElementById('splashClient').style.display = 'none'; let am = document.getElementById('appMain'); am.style.display = 'flex'; setTimeout(()=> am.style.opacity = '1', 50); }, 500); }
 
-        /* BLOCO DE DADOS: Cache e Sincronização Dinâmica */
         let cache = { agendamentos: [], servicos: [], configuracoes: [], geral: [], etag: "" };
         let mesVisao = new Date();
         const diasSemanaNomes = ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"];
@@ -287,7 +243,6 @@
         }
         buscarDados(); setInterval(buscarDados, 4000);
 
-        /* BLOCO DE CALENDÁRIO: Renderização dos dias livres e bloqueados */
         function mudarMes(d) { mesVisao.setMonth(mesVisao.getMonth() + d); montarCalendario(); }
         function montarCalendario() {
             const grid = document.getElementById('gridDias'); grid.innerHTML = '';
@@ -353,7 +308,6 @@
         function fecharModal() { document.getElementById('modalAgendamento').classList.remove('show'); }
         function fecharModalClickFora(e) { if(e.target.id === 'modalAgendamento') fecharModal(); }
 
-        /* BLOCO DE PAGAMENTOS: Controle de clique e cópia da chave PIX */
         function selecionarPagamento(metodo, elemento) {
             document.querySelectorAll('.pay-method-card').forEach(el => el.classList.remove('active'));
             elemento.classList.add('active');
@@ -380,7 +334,6 @@
             }).catch(err => { alert("Erro ao copiar a chave PIX: " + err); });
         }
 
-        /* BLOCO DE ENVIO: Comunicação com a Planilha e Disparo do WhatsApp */
         function salvarAgendamento() {
             const data = document.getElementById('dataEscolhidaISO').value; 
             const hora = document.getElementById('horaEscolhida').value;
